@@ -8,10 +8,16 @@
 </head>
 <body>
 <header>
-    <h1>Frank</h1>
-    <nav>
-        <ul>
-            <li><a href="/frank/index.php">Inicio</a></li>
-        </ul>
-    </nav>
+    <div class="header-container">
+        <div class="logo">
+            <img src="/frank/img/logo.jpeg" alt="Logo Frank" style="max-height: 100px;">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/frank/index.php">Inicio</a></li>
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </div>
 </header>
