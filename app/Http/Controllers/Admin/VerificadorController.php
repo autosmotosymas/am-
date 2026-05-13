@@ -3,63 +3,74 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Verificador;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class VerificadorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        $verificadores = Verificador::withCount('certificaciones')
+            ->latest()->paginate(20);
+
+        return view('admin.verificadores.index', compact('verificadores'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('admin.verificadores.form');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $data = $request->validate([
+            'nombre'   => ['required', 'string', 'max:100'],
+            'email'    => ['required', 'email', 'unique:verificadores,email'],
+            'telefono' => ['nullable', 'string', 'max:20'],
+            'zona'     => ['nullable', 'string', 'max:100'],
+        ]);
+
+        Verificador::create($data);
+
+        return redirect()->route('admin.verificadores.index')
+            ->with('ok', 'Verificador registrado.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Verificador $verificadore): View
     {
-        //
+        return view('admin.verificadores.form', ['verificador' => $verificadore]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Verificador $verificadore): RedirectResponse
     {
-        //
+        $data = $request->validate([
+            'nombre'   => ['required', 'string', 'max:100'],
+            'email'    => ['required', 'email', "unique:verificadores,email,{$verificadore->id}"],
+            'telefono' => ['nullable', 'string', 'max:20'],
+            'zona'     => ['nullable', 'string', 'max:100'],
+            'activo'   => ['boolean'],
+        ]);
+
+        $verificadore->update($data);
+
+        return redirect()->route('admin.verificadores.index')
+            ->with('ok', 'Verificador actualizado.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Verificador $verificadore): RedirectResponse
     {
-        //
+        $verificadore->delete();
+
+        return redirect()->route('admin.verificadores.index')
+            ->with('ok', 'Verificador eliminado.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function show(Verificador $verificadore): View
     {
-        //
+        $verificadore->load(['certificaciones.vehiculo.agencia']);
+
+        return view('admin.verificadores.show', ['verificador' => $verificadore]);
     }
 }

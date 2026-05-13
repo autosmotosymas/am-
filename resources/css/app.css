@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Container encajado 1280px — se usa en todas las vistas */
+@layer components {
+  .container-amm {
+    @apply max-w-container mx-auto px-4 sm:px-6;
+  }
+
+  /* Dark mode base */
+  .bg-page        { @apply bg-gray-50      dark:bg-[#111111]; }
+  .bg-card        { @apply bg-white        dark:bg-[#1a1a1a]; }
+  .bg-card2       { @apply bg-gray-100     dark:bg-[#242424]; }
+  .border-base    { @apply border-gray-200 dark:border-[#2e2e2e]; }
+  .text-base      { @apply text-gray-900   dark:text-[#f0f0f0]; }
+  .text-muted     { @apply text-gray-500   dark:text-[#888888]; }
+
+  /* Badges de estatus de vehículo */
+  .badge-cert   { @apply text-[10px] font-semibold px-2.5 py-0.5 rounded-full border bg-[#0a2010]  text-[#2ecc71] border-[#2ecc71]; }
+  .badge-nocert { @apply text-[10px] font-semibold px-2.5 py-0.5 rounded-full border bg-[#1e1500]  text-[#f0a500] border-[#f0a500]; }
+  .badge-apt    { @apply text-[10px] font-semibold px-2.5 py-0.5 rounded-full border bg-[#080e20]  text-[#5b8af0] border-[#5b8af0]; }
+  .badge-sold   { @apply text-[10px] font-semibold px-2.5 py-0.5 rounded-full border bg-[#200808]  text-[#e24b4b] border-[#e24b4b]; }
+
+  /* Botones */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-brand-orange hover:bg-brand-orange2
+           text-white font-medium text-sm
+           px-5 py-2.5 rounded-lg
+           transition-colors duration-150;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2
+           bg-transparent hover:bg-gray-100 dark:hover:bg-[#242424]
+           text-gray-700 dark:text-[#f0f0f0]
+           border border-gray-300 dark:border-[#2e2e2e]
+           font-medium text-sm
+           px-5 py-2.5 rounded-lg
+           transition-colors duration-150;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           bg-transparent hover:bg-gray-100 dark:hover:bg-[#242424]
+           text-gray-500 dark:text-[#888888]
+           font-medium text-sm px-3 py-2 rounded-lg
+           transition-colors duration-150;
+  }
+}

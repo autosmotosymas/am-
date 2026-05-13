@@ -11,7 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // AplicarTema se ejecuta en todas las rutas web para compartir el tema del usuario a las vistas
+        $middleware->web(append: [
+            \App\Http\Middleware\AplicarTema::class,
+        ]);
+
+        // Aliases para usar en rutas con parámetros
+        $middleware->alias([
+            'rol'                => \App\Http\Middleware\CheckRol::class,
+            'suscripcion.activa' => \App\Http\Middleware\CheckSuscripcionActiva::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

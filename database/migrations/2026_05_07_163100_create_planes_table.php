@@ -10,11 +10,14 @@ return new class extends Migration
     {
         Schema::create('planes', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->decimal('precio', 10, 2);
+            $table->decimal('precio_mensual', 10, 2);
             $table->unsignedSmallInteger('max_vehiculos');
             $table->unsignedTinyInteger('max_fotos_por_vehiculo')->default(10);
+            $table->boolean('incluye_certificacion')->default(false);
+            $table->unsignedTinyInteger('vehiculos_destacados')->default(0);
+            $table->boolean('badge_premium')->default(false);
             $table->json('features')->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();

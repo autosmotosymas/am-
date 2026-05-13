@@ -1,0 +1,37 @@
+{
+    "name": "AutosMotosYMás — Captura",
+    "short_name": "AMM Captura",
+    "description": "App de captura de inventario para verificadores AMM",
+    "start_url": "/captura",
+    "scope": "/captura",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#111111",
+    "theme_color": "#111111",
+    "lang": "es-MX",
+    "categories": ["auto", "business"],
+    "icons": [
+        { "src": "/img/icons/icon-72.png",  "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-96.png",  "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+        { "src": "/img/icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+        { "src": "/img/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    ],
+    "shortcuts": [
+        {
+            "name": "Nuevo vehículo",
+            "short_name": "Nuevo",
+            "url": "/captura/nuevo",
+            "icons": [{ "src": "/img/icons/icon-96.png", "sizes": "96x96" }]
+        },
+        {
+            "name": "Mi inventario",
+            "short_name": "Mi lista",
+            "url": "/captura",
+            "icons": [{ "src": "/img/icons/icon-96.png", "sizes": "96x96" }]
+        }
+    ]
+}
