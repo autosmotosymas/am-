@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Verificador extends Model
 {
+    protected $table = 'verificadores';
+
     protected $fillable = ['nombre', 'email', 'telefono', 'zona', 'activo'];
 
     protected $casts = ['activo' => 'boolean'];

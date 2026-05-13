@@ -38,11 +38,11 @@
         class="sticky top-0 z-50 bg-white/90 dark:bg-[#111111]/95 backdrop-blur-sm border-b border-base"
         x-data="{ mobileOpen: false }"
     >
-        <nav class="container-amm flex items-center justify-between h-16">
+        <nav class="container-amm flex items-center justify-between py-[30px]">
 
             {{-- Logo --}}
             <a href="{{ route('home') }}" class="flex items-center shrink-0">
-                <img src="{{ asset('img/logo_amm.png') }}" alt="AutosMotosYMás" class="h-9 w-auto">
+                <img src="{{ asset('img/logo_amm.png') }}" alt="AutosMotosYMás" class="w-[200px] h-auto">
             </a>
 
             {{-- Links desktop --}}
@@ -196,7 +196,7 @@
                 {{-- Marca --}}
                 <div class="lg:col-span-1">
                     <a href="{{ route('home') }}" class="inline-block mb-3">
-                        <img src="{{ asset('img/logo_amm.png') }}" alt="AutosMotosYMás" class="h-8 w-auto">
+                        <img src="{{ asset('img/logo_amm.png') }}" alt="AutosMotosYMás" class="w-[200px] h-auto">
                     </a>
                     <p class="text-muted text-sm leading-relaxed">
                         Plataforma de vehículos seminuevos certificados en Guadalajara y Zona Metropolitana.
