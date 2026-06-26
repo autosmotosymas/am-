@@ -33,7 +33,8 @@
     @else
         <div class="space-y-3">
             @foreach($leads as $lead)
-                <div class="bg-card border border-base rounded-2xl p-5
+                <div id="lead-{{ $lead->id }}"
+                     class="bg-card border border-base rounded-2xl p-5
                             {{ $lead->status === 'nuevo' ? 'border-l-2 border-l-blue-400' : '' }}">
                     <div class="flex flex-col sm:flex-row sm:items-start gap-4">
 

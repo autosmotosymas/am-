@@ -29,7 +29,8 @@
             @else
                 <div class="divide-y divide-base">
                     @foreach($leadsRecientes as $lead)
-                        <div class="flex items-center gap-4 px-5 py-3.5">
+                        <a href="{{ route('agencia.leads.index') }}#lead-{{ $lead->id }}"
+                           class="flex items-center gap-4 px-5 py-3.5 hover:bg-card2 transition-colors">
                             <div class="w-9 h-9 rounded-xl bg-brand-orange/10 flex items-center justify-center text-brand-orange font-bold text-sm shrink-0">
                                 {{ strtoupper(substr($lead->nombre, 0, 1)) }}
                             </div>
@@ -46,7 +47,7 @@
                                 @else bg-gray-500/10 text-gray-400 border border-gray-500/20 @endif">
                                 {{ ['nuevo'=>'Nuevo','en_proceso'=>'En proceso','cerrado_ganado'=>'Ganado','cerrado_perdido'=>'Cerrado'][$lead->status] }}
                             </span>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
             @endif
