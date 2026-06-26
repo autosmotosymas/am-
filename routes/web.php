@@ -154,6 +154,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('suscripciones/{suscripcione}/cancelar', [SuscripcionController::class, 'cancelar'])->name('suscripciones.cancelar');
 
     Route::resource('vendedores', VendedorController::class)
+         ->parameters(['vendedores' => 'vendedor'])
          ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 });
 

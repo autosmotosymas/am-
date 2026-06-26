@@ -25,7 +25,7 @@
     <div x-show="sidebarOpen" @click="sidebarOpen = false"
          class="fixed inset-0 bg-black/60 z-30 lg:hidden"></div>
 
-    <div class="flex h-screen overflow-hidden max-w-[1280px] mx-auto w-full">
+    <div class="flex h-screen overflow-hidden w-full">
 
         {{-- SIDEBAR --}}
         <aside class="fixed inset-y-0 left-0 z-40 w-60 bg-card border-r border-base flex flex-col
