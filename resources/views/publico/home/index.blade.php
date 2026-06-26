@@ -236,6 +236,65 @@
     @endif
 
     {{-- ══════════════════════════════════════════════════
+         CONTACTO
+    ══════════════════════════════════════════════════ --}}
+    <section id="contacto" class="section-py bg-card border-y border-base">
+        <div class="container-amm">
+            <div class="max-w-xl mx-auto">
+                <div class="text-center mb-8">
+                    <p class="text-xs font-semibold text-brand-orange uppercase tracking-widest mb-2">¿Dudas o comentarios?</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-base">Contáctanos</h2>
+                </div>
+
+                @if(session('contacto_ok'))
+                    <div class="bg-green-500/10 border border-green-500/30 text-green-400 rounded-2xl px-6 py-5 text-center mb-6">
+                        <p class="font-semibold">¡Mensaje enviado!</p>
+                        <p class="text-sm mt-1">Nos pondremos en contacto contigo pronto.</p>
+                    </div>
+                @else
+                    <form method="POST" action="{{ route('contacto.store') }}" class="space-y-4">
+                        @csrf
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="label-amm">Nombre *</label>
+                                <input type="text" name="nombre" value="{{ old('nombre') }}" required
+                                       class="input-amm w-full" placeholder="Tu nombre">
+                                @error('nombre')<p class="text-xs text-red-400 mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="label-amm">Teléfono *</label>
+                                <input type="tel" name="telefono" value="{{ old('telefono') }}" required
+                                       class="input-amm w-full" placeholder="33 1234 5678">
+                                @error('telefono')<p class="text-xs text-red-400 mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="label-amm">Correo electrónico *</label>
+                            <input type="email" name="correo" value="{{ old('correo') }}" required
+                                   class="input-amm w-full" placeholder="tu@correo.com">
+                            @error('correo')<p class="text-xs text-red-400 mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="label-amm">Comentarios *</label>
+                            <textarea name="comentarios" rows="4" required
+                                      class="input-amm w-full resize-none"
+                                      placeholder="¿En qué podemos ayudarte?">{{ old('comentarios') }}</textarea>
+                            @error('comentarios')<p class="text-xs text-red-400 mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full justify-center">
+                            Enviar mensaje
+                        </button>
+                    </form>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    {{-- ══════════════════════════════════════════════════
          CTA AGENCIAS
     ══════════════════════════════════════════════════ --}}
     <section class="relative min-h-screen flex items-center"

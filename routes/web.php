@@ -6,6 +6,7 @@ use App\Http\Controllers\Publico\BusquedaController;
 use App\Http\Controllers\Publico\VehiculoController as PublicoVehiculoController;
 use App\Http\Controllers\Publico\AgenciaController as PublicoAgenciaController;
 use App\Http\Controllers\Publico\LeadController as PublicoLeadController;
+use App\Http\Controllers\Publico\ContactoController;
 use App\Http\Controllers\Perfil\PerfilController;
 use App\Http\Controllers\Perfil\TemaController;
 use App\Http\Controllers\Agencia\DashboardController as AgenciaDashboard;
@@ -38,6 +39,7 @@ Route::get('/agencias/{agencia:slug}', [PublicoAgenciaController::class, 'show']
 Route::get('/autos/marca/{marca}', [BusquedaController::class, 'marca'])->name('busqueda.marca');
 Route::get('/autos/tipo/{tipo}', [BusquedaController::class, 'tipo'])->name('busqueda.tipo');
 Route::post('/leads', [PublicoLeadController::class, 'store'])->name('lead.store');
+Route::post('/contacto', [ContactoController::class, 'store'])->name('contacto.store');
 
 /*
 |--------------------------------------------------------------------------

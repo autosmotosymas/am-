@@ -223,10 +223,17 @@
                     </ul>
                 </div>
 
-                {{-- Legal --}}
+                {{-- Contacto / Legal --}}
                 <div>
-                    <h3 class="text-base font-bold text-base mb-4">Legal</h3>
+                    <h3 class="text-base font-bold text-base mb-4">Contacto</h3>
                     <ul class="space-y-2">
+                        <li>
+                            @if(request()->routeIs('home'))
+                                <a href="#contacto" class="text-base text-muted hover:text-brand-orange transition-colors">Escríbenos</a>
+                            @else
+                                <a href="{{ route('home') }}#contacto" class="text-base text-muted hover:text-brand-orange transition-colors">Escríbenos</a>
+                            @endif
+                        </li>
                         <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Aviso de privacidad</a></li>
                         <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Términos y condiciones</a></li>
                     </ul>
