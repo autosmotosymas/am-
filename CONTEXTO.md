@@ -43,7 +43,7 @@ Plataforma de venta de vehículos seminuevos para **Guadalajara / ZMG**.
 
 ---
 
-## Los 4 roles del sistema
+## Los 5 roles del sistema
 
 | Rol | Acceso | Redirige a |
 |-----|--------|-----------|
@@ -51,6 +51,7 @@ Plataforma de venta de vehículos seminuevos para **Guadalajara / ZMG**.
 | `agencia` | Su inventario, leads, estadísticas | `/agencia/dashboard` |
 | `capturador` | Solo captura de inventario desde móvil | `/captura` |
 | `comprador` | Navegar, seguir autos, enviar leads | `/perfil` |
+| `vendedor` | Registrar agencias, capturar inventario, gestionar fotos | `/vendedor/dashboard` |
 
 ---
 
@@ -201,7 +202,8 @@ resources/views/layouts/
 ├── guest.blade.php    ← Auth (split: branding izq | form der, full-width bg)
 ├── agencia.blade.php  ← Panel agencia (sidebar + topbar, max-w-[1280px])
 ├── admin.blade.php    ← Panel admin (sidebar + topbar, max-w-[1280px])
-└── captura.blade.php  ← PWA captura móvil
+├── captura.blade.php  ← PWA captura móvil
+└── vendedor.blade.php ← PWA vendedor móvil (mismo patrón que captura, max-w-lg centrado)
 ```
 
 ---
@@ -299,11 +301,27 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 - [x] Captura PWA: index y nuevo vehículo
 - [x] Perfil del comprador
 
+### Frontend — Paneles vendedor (NUEVO — jun 2026)
+- [x] Layout vendedor: PWA móvil, bottom nav, back button, header action slot
+- [x] Dashboard vendedor: lista de agencias propias
+- [x] Alta de agencia: crea Agencia + User (rol agencia) en un solo form con email/password
+- [x] Show/edit agencia: status, stats, planes Stripe, editar perfil (logo/banner/desc), cambiar acceso (email/password del cliente)
+- [x] Inventario de vehículos: lista con foto, info, status badges y botones de cambio de status
+- [x] Alta de vehículo: form completo con catálogo marca/modelo (config/catalogo.php) + Alpine.js selectores en cascada
+- [x] Editar vehículo: form pre-llenado, con tarjeta de acceso a gestión de fotos
+- [x] Gestión de fotos vendedor: drag-and-drop SortableJS (vanilla JS), agregar, eliminar, principal
+- [x] Admin: panel de vendedores (index/create/store/show/destroy)
+
+### Frontend — Paneles agencia (mejoras jun 2026)
+- [x] Gestión de fotos por vehículo: drag-and-drop SortableJS, botón 📷 en inventario
+- [x] Leads del dashboard clickeables: van a leads.index con ancla al lead específico
+
 ### Frontend — Componentes
 - [x] `tarjeta-vehiculo` — card de vehículo reutilizable
 - [x] `paginacion` — paginación estilizada
 - [x] `chip-filtro` — chips de filtros activos con X para quitar
 - [x] `_agencia-card` — card de agencia en ficha de vehículo
+- [x] `selector-vehiculo` — selectores en cascada tipo/marca/modelo/año (Alpine.js, usa config/catalogo.php)
 
 ### Sistema de diseño
 - [x] Tailwind con paleta de marca (#E8710A + #111111)
@@ -316,15 +334,13 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 
 ## ⏳ PENDIENTE — En orden de prioridad
 
-### 1. Sandbox / pruebas — EN PROGRESO
+### 1. Sandbox / pruebas — COMPLETADO ✅
 - [x] Servidor VPS DigitalOcean activo con stack completo
 - [x] Dominio autosmotosymas.mx apuntando al VPS con SSL
-- [x] Stripe en modo TEST con claves completas en .env del servidor
-- [ ] Registrar webhook en Stripe Dashboard (modo test): `https://autosmotosymas.mx/stripe/webhook`
-- [ ] Pegar `STRIPE_WEBHOOK_SECRET` en .env del servidor
-- [ ] Crear usuario admin en producción
-- [ ] Crear agencia de prueba y suscribirse con tarjeta demo de Stripe
-- [ ] Agregar `MAIL_PASSWORD` en .env del servidor
+- [x] Stripe en modo TEST con claves + webhook configurados
+- [x] Webhook funcionando end-to-end: pago → suscripción activa → agencia.activo = true
+- [x] Usuario admin en producción: alejandro@vml.mx
+- [x] Agencia de prueba (Cuacua Automotriz) registrada, suscripción activa, autos capturados
 
 ### 2. Stripe — pasar a LIVE (post-pruebas)
 - [ ] Cambiar a claves LIVE de Stripe (reemplazar pk_test / sk_test)
@@ -336,12 +352,20 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 - [ ] Dar de alta agencias reales
 - [ ] Capturar inventario inicial de vehículos
 
-### 4. Funcionalidad adicional (post-MVP)
+### 3. Auto-registro de agencias (Opción A — pendiente)
+- [ ] Flujo de auto-registro: agencia llena form público → paga Stripe → accede a su panel
+- [ ] Sin depender del vendedor para el alta
+
+### 4. Certificaciones
+- [ ] UI para solicitar certificación desde panel agencia
+- [ ] Flujo verificador: agenda → inspección → resultado con checklist
+
+### 5. Funcionalidad adicional (post-MVP)
 - [ ] Seguimientos de vehículos (tabla `seguimientos` existe, falta UI y lógica)
 - [ ] Notificaciones push PWA (tabla existe, falta implementación)
 - [ ] Categorías por marca y tipo (rutas SEO: `/autos/marca/{marca}`)
 - [ ] Páginas legales: aviso de privacidad, términos y condiciones
-- [ ] Integración WhatsApp directo (botón wa.me con mensaje pre-armado)
+- [ ] Stripe LIVE: cambiar claves test → live en producción
 
 ---
 
@@ -394,6 +418,18 @@ tail -f /var/www/amm/storage/logs/laravel.log
 # Estado del queue worker
 systemctl status amm-queue
 
-# Deploy de cambios desde git
-cd /var/www/amm && git pull && php8.4 artisan migrate --force && php8.4 artisan config:cache && php8.4 artisan route:cache && php8.4 artisan view:cache && npm run build && systemctl restart amm-queue
+# Deploy estándar (sin migraciones)
+cd /var/www/amm && git pull && php8.4 artisan config:cache && php8.4 artisan route:cache && php8.4 artisan view:clear
+
+# Deploy con migraciones
+cd /var/www/amm && git pull && php8.4 artisan migrate --force && php8.4 artisan config:cache && php8.4 artisan route:cache && php8.4 artisan view:clear && npm run build && systemctl restart amm-queue
+
+# IMPORTANTE: NO existe php artisan view:cache — usar view:clear
 ```
+
+### Notas técnicas importantes
+- `view:cache` NO existe en Laravel — siempre usar `view:clear`
+- Route model binding usa **slug** en Agencia y Vehiculo — URLs de JS deben usar `{{ $model->slug }}`
+- **Alpine.js y SortableJS no mezclar** — Alpine en contenedor padre bloquea drag events de Sortable
+- Spatie middleware aliases deben estar en `bootstrap/app.php` (no en Kernel — Laravel 11)
+- CSRF exclusión del webhook en `bootstrap/app.php`: `$middleware->validateCsrfTokens(except: ['stripe/webhook'])`
