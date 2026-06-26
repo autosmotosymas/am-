@@ -41,12 +41,12 @@ class StripeService
      * Si el plan tiene stripe_price_id → modo subscription (recurrente).
      * Si no → modo payment (único, manual).
      */
-    public function crearCheckoutSession(Agencia $agencia, Plan $plan, string $customerId): \Stripe\Checkout\Session
+    public function crearCheckoutSession(Agencia $agencia, Plan $plan, string $customerId, ?string $successUrl = null, ?string $cancelUrl = null): \Stripe\Checkout\Session
     {
         $params = [
             'customer'           => $customerId,
-            'success_url'        => route('agencia.suscripcion.exito') . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url'         => route('agencia.suscripcion.index'),
+            'success_url'        => ($successUrl ?? route('agencia.suscripcion.exito')) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url'         => $cancelUrl ?? route('agencia.suscripcion.index'),
             'allow_promotion_codes' => true,
             'metadata'           => [
                 'agencia_id' => $agencia->id,

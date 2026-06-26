@@ -99,6 +99,10 @@ Route::middleware(['auth', 'role:vendedor'])->prefix('vendedor')->name('vendedor
     Route::get('/agencias', [VendedorAgenciaController::class, 'index'])->name('agencias.index');
     Route::get('/agencias/nueva', [VendedorAgenciaController::class, 'create'])->name('agencias.create');
     Route::post('/agencias', [VendedorAgenciaController::class, 'store'])->name('agencias.store');
+    Route::get('/agencias/exito', [VendedorAgenciaController::class, 'exito'])->name('agencias.exito');
+    Route::get('/agencias/{agencia}', [VendedorAgenciaController::class, 'show'])->name('agencias.show');
+    Route::put('/agencias/{agencia}', [VendedorAgenciaController::class, 'update'])->name('agencias.update');
+    Route::post('/agencias/{agencia}/checkout', [VendedorAgenciaController::class, 'checkout'])->name('agencias.checkout');
 
     Route::get('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'index'])->name('vehiculos.index');
     Route::get('/agencias/{agencia}/vehiculos/nuevo', [VendedorVehiculoController::class, 'create'])->name('vehiculos.create');

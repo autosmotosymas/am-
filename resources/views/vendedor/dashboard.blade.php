@@ -30,7 +30,7 @@
     @else
         <div class="space-y-3">
             @foreach($agencias as $ag)
-                <a href="{{ route('vendedor.vehiculos.index', $ag) }}"
+                <a href="{{ route('vendedor.agencias.show', $ag) }}"
                    class="flex items-center gap-3 bg-white/5 rounded-2xl p-3 border border-white/8 active:scale-95 transition-all block">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-white truncate">{{ $ag->nombre }}</p>
