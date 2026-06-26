@@ -72,6 +72,9 @@ class WebhookController extends Controller
             'stripe_subscription_id' => $session->subscription ?? null,
         ]);
 
+        // Activar la agencia
+        $agencia->update(['activo' => true]);
+
         // Registrar pago
         if ($session->payment_intent) {
             Pago::create([
