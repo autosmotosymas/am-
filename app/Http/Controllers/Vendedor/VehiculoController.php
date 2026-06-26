@@ -42,6 +42,19 @@ class VehiculoController extends Controller
         return view('vendedor.vehiculos.create', compact('agencia', 'catalogo'));
     }
 
+    public function updateStatus(Request $request, Agencia $agencia, Vehiculo $vehiculo): RedirectResponse
+    {
+        $this->autorizarAgencia($agencia);
+
+        $request->validate([
+            'status' => ['required', 'in:disponible,inactivo,apartado,vendido'],
+        ]);
+
+        $vehiculo->update(['status' => $request->status]);
+
+        return back()->with('ok', "Status actualizado a {$request->status}.");
+    }
+
     public function store(Request $request, Agencia $agencia): RedirectResponse
     {
         $this->autorizarAgencia($agencia);

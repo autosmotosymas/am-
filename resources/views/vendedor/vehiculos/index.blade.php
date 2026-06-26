@@ -69,18 +69,58 @@
                             </p>
                         </div>
 
-                        {{-- Status --}}
-                        <div class="shrink-0 text-right">
+                        {{-- Status + acciones --}}
+                        <div class="shrink-0 text-right space-y-1">
                             @php
                                 $st = match($v->status) {
-                                    'disponible' => ['Activo',   'text-green-400'],
-                                    'inactivo'   => ['Borrador', 'text-yellow-400'],
-                                    'vendido'    => ['Vendido',  'text-gray-500'],
-                                    default      => [$v->status, 'text-gray-400'],
+                                    'disponible' => ['Publicado', 'text-green-400'],
+                                    'inactivo'   => ['Borrador',  'text-yellow-400'],
+                                    'apartado'   => ['Apartado',  'text-blue-400'],
+                                    'vendido'    => ['Vendido',   'text-gray-500'],
+                                    default      => [$v->status,  'text-gray-400'],
                                 };
                             @endphp
-                            <span class="text-xs {{ $st[1] }} font-medium">{{ $st[0] }}</span>
-                            <p class="text-[10px] text-gray-600 mt-0.5">{{ $v->created_at->diffForHumans(null, true) }}</p>
+                            <span class="text-xs {{ $st[1] }} font-medium block">{{ $st[0] }}</span>
+
+                            @if($v->status === 'inactivo')
+                                <form method="POST" action="{{ route('vendedor.vehiculos.status', [$agencia, $v]) }}">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="status" value="disponible">
+                                    <button class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full hover:bg-green-500/30 transition-colors">
+                                        Publicar
+                                    </button>
+                                </form>
+                            @elseif($v->status === 'disponible')
+                                <form method="POST" action="{{ route('vendedor.vehiculos.status', [$agencia, $v]) }}">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="status" value="apartado">
+                                    <button class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full hover:bg-blue-500/30 transition-colors">
+                                        Apartar
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('vendedor.vehiculos.status', [$agencia, $v]) }}">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="status" value="vendido">
+                                    <button class="text-[10px] bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded-full hover:bg-gray-500/30 transition-colors">
+                                        Vendido
+                                    </button>
+                                </form>
+                            @elseif($v->status === 'apartado')
+                                <form method="POST" action="{{ route('vendedor.vehiculos.status', [$agencia, $v]) }}">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="status" value="disponible">
+                                    <button class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                                        Disponible
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('vendedor.vehiculos.status', [$agencia, $v]) }}">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="status" value="vendido">
+                                    <button class="text-[10px] bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded-full">
+                                        Vendido
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 @endforeach

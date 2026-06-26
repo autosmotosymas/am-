@@ -107,6 +107,7 @@ Route::middleware(['auth', 'role:vendedor'])->prefix('vendedor')->name('vendedor
     Route::get('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'index'])->name('vehiculos.index');
     Route::get('/agencias/{agencia}/vehiculos/nuevo', [VendedorVehiculoController::class, 'create'])->name('vehiculos.create');
     Route::post('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'store'])->name('vehiculos.store');
+    Route::patch('/agencias/{agencia}/vehiculos/{vehiculo}/status', [VendedorVehiculoController::class, 'updateStatus'])->name('vehiculos.status');
 });
 
 /*

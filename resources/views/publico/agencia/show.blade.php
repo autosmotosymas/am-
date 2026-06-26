@@ -2,13 +2,24 @@
 
     <div class="container-amm py-8">
 
+        {{-- Banner --}}
+        @if($agencia->banner)
+            <div class="rounded-2xl overflow-hidden mb-4 h-40 sm:h-56">
+                <img src="{{ asset('storage/' . $agencia->banner) }}" alt="Banner {{ $agencia->nombre }}" class="w-full h-full object-cover">
+            </div>
+        @endif
+
         {{-- Header agencia --}}
         <div class="bg-card border border-base rounded-2xl p-6 mb-6">
             <div class="flex flex-col sm:flex-row gap-5 items-start">
 
                 {{-- Avatar / Logo --}}
-                <div class="w-20 h-20 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center shrink-0">
-                    <span class="text-3xl font-black text-brand-orange">{{ mb_substr($agencia->nombre, 0, 1) }}</span>
+                <div class="w-20 h-20 rounded-2xl bg-brand-orange/10 border border-brand-orange/20 overflow-hidden shrink-0 flex items-center justify-center">
+                    @if($agencia->logo)
+                        <img src="{{ asset('storage/' . $agencia->logo) }}" alt="{{ $agencia->nombre }}" class="w-full h-full object-cover">
+                    @else
+                        <span class="text-3xl font-black text-brand-orange">{{ mb_substr($agencia->nombre, 0, 1) }}</span>
+                    @endif
                 </div>
 
                 <div class="flex-1 min-w-0">
