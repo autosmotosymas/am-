@@ -6,31 +6,19 @@
     ══════════════════════════════════════════════════ --}}
     <section class="relative bg-[#111111] overflow-hidden"
              style="min-height: clamp(480px, 70vh, 720px);"
-             x-data="{ idx: 0, going: false }"
-             x-init="
-                 $nextTick(() => {
-                     const track = $refs.track;
-                     track.addEventListener('transitionend', () => {
-                         if (idx === 3) { going = false; idx = 0; }
-                     });
-                     setInterval(() => { going = true; idx++; }, 5500);
-                 });
-             ">
+             x-data="{ idx: 0 }"
+             x-init="setInterval(() => { idx = (idx + 1) % 3; }, 5500)">
 
-        {{-- Slider: banner01, banner02, banner03, clon de banner01 — loop infinito --}}
+        {{-- Crossfade slider: 3 banners apilados, se alterna opacity --}}
         <div class="absolute inset-0">
-            <div x-ref="track"
-                 class="flex h-full"
-                 style="width: 400%"
-                 :style="`transform: translateX(-${idx * 25}%); transition: ${going ? 'transform 1.1s cubic-bezier(0.77,0,0.175,1)' : 'none'}`">
-                @foreach(['banner01', 'banner02', 'banner03', 'banner01'] as $banner)
-                    <div class="h-full" style="width: 25%; flex-shrink: 0;">
-                        <img src="{{ asset('img/banners/' . $banner . '.jpg') }}"
-                             alt=""
-                             class="w-full h-full object-cover">
-                    </div>
-                @endforeach
-            </div>
+            @foreach(['banner01', 'banner02', 'banner03'] as $i => $banner)
+                <div class="absolute inset-0 transition-opacity duration-[1100ms]"
+                     :class="idx === {{ $i }} ? 'opacity-100' : 'opacity-0'">
+                    <img src="{{ asset('img/banners/' . $banner . '.jpg') }}"
+                         alt=""
+                         class="w-full h-full object-cover">
+                </div>
+            @endforeach
             {{-- Overlay oscuro para legibilidad del texto --}}
             <div class="absolute inset-0 bg-black/30"></div>
         </div>
@@ -191,8 +179,8 @@
                 ] as $paso)
                     <div class="relative bg-card2 border border-base rounded-2xl p-6">
                         <span class="absolute top-5 right-5 text-4xl font-black text-brand-orange/10 select-none">{{ $paso['num'] }}</span>
-                        <div class="w-[66px] h-[66px] rounded-xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-4">
-                            <svg class="w-[30px] h-[30px] text-brand-orange" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-brand-orange" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $paso['icon'] }}"/>
                             </svg>
                         </div>
@@ -315,7 +303,7 @@
                         Planes desde $599/mes.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="{{ route('register') }}"
+                        <a href="#contacto"
                            class="inline-flex items-center justify-center gap-2 bg-white text-brand-orange font-semibold px-7 py-3 rounded-lg hover:bg-orange-50 transition-colors">
                             Empezar gratis
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

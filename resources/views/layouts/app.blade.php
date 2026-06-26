@@ -218,7 +218,7 @@
                 <div>
                     <h3 class="text-base font-bold text-base mb-4">Para agencias</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('register') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Publicar inventario</a></li>
+                        <li><a href="{{ route('home') }}#contacto" class="text-base text-muted hover:text-brand-orange transition-colors">Publicar inventario</a></li>
                         <li><a href="{{ route('login') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Acceso agencia</a></li>
                     </ul>
                 </div>

@@ -48,6 +48,42 @@ class VendedorController extends Controller
             ->with('ok', "Vendedor {$user->name} creado.");
     }
 
+    public function edit(User $vendedor): View
+    {
+        abort_unless($vendedor->hasRole('vendedor'), 404);
+
+        $vendedor->load('agenciasVendidas.vehiculos');
+
+        return view('admin.vendedores.show', compact('vendedor'));
+    }
+
+    public function update(Request $request, User $vendedor): RedirectResponse
+    {
+        abort_unless($vendedor->hasRole('vendedor'), 404);
+
+        $rules = [
+            'name'     => ['required', 'string', 'max:100'],
+            'email'    => ['required', 'email', 'unique:users,email,' . $vendedor->id],
+            'telefono' => ['nullable', 'string', 'max:20'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ];
+
+        $data = $request->validate($rules);
+
+        $vendedor->name     = $data['name'];
+        $vendedor->email    = $data['email'];
+        $vendedor->telefono = $data['telefono'] ?? null;
+
+        if (!empty($data['password'])) {
+            $vendedor->password = Hash::make($data['password']);
+        }
+
+        $vendedor->save();
+
+        return redirect()->route('admin.vendedores.show', $vendedor)
+            ->with('ok', 'Vendedor actualizado.');
+    }
+
     public function show(User $vendedor): View
     {
         abort_unless($vendedor->hasRole('vendedor'), 404);

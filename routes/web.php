@@ -151,7 +151,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('suscripciones/{suscripcione}/cancelar', [SuscripcionController::class, 'cancelar'])->name('suscripciones.cancelar');
 
     Route::resource('vendedores', VendedorController::class)
-         ->only(['index', 'create', 'store', 'show', 'destroy']);
+         ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 });
 
 require __DIR__.'/auth.php';

@@ -70,8 +70,8 @@
             </div>
         </div>
 
-        {{-- Panel derecho — formulario --}}
-        <div class="flex-1 flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16">
+        {{-- Panel derecho — formulario (fondo oscuro fijo para que inputs text-white sean legibles) --}}
+        <div class="flex-1 flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 bg-[#111111]">
 
             {{-- Logo móvil --}}
             <div class="md:hidden mb-8">
