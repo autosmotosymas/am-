@@ -42,6 +42,54 @@ class VehiculoController extends Controller
         return view('vendedor.vehiculos.create', compact('agencia', 'catalogo'));
     }
 
+    public function edit(Agencia $agencia, Vehiculo $vehiculo): View
+    {
+        $this->autorizarAgencia($agencia);
+
+        $catalogo = config('catalogo');
+
+        return view('vendedor.vehiculos.edit', compact('agencia', 'vehiculo', 'catalogo'));
+    }
+
+    public function update(Request $request, Agencia $agencia, Vehiculo $vehiculo): RedirectResponse
+    {
+        $this->autorizarAgencia($agencia);
+
+        $data = $request->validate([
+            'tipo'        => ['required', 'in:auto,moto,camioneta,camion,otro'],
+            'marca'       => ['required', 'string', 'max:60'],
+            'modelo'      => ['required', 'string', 'max:60'],
+            'anio'        => ['required', 'integer', 'min:1970', 'max:' . (date('Y') + 1)],
+            'version'     => ['nullable', 'string', 'max:80'],
+            'precio'      => ['required', 'numeric', 'min:0'],
+            'kilometraje' => ['required', 'integer', 'min:0'],
+            'transmision' => ['required', 'in:manual,automatica,cvt'],
+            'combustible' => ['required', 'in:gasolina,diesel,electrico,hibrido,gas'],
+            'color'       => ['required', 'string', 'max:40'],
+            'vin'         => ['nullable', 'string', 'max:17'],
+            'notas'       => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $vehiculo->update([
+            'tipo'        => $data['tipo'],
+            'marca'       => $data['marca'],
+            'modelo'      => $data['modelo'],
+            'anio'        => $data['anio'],
+            'version'     => $data['version'] ?? null,
+            'precio'      => $data['precio'],
+            'kilometraje' => $data['kilometraje'],
+            'transmision' => $data['transmision'],
+            'combustible' => $data['combustible'],
+            'color'       => $data['color'],
+            'vin'         => $data['vin'] ?? null,
+            'descripcion' => $data['notas'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('vendedor.vehiculos.index', $agencia)
+            ->with('ok', "{$vehiculo->anio} {$vehiculo->marca} {$vehiculo->modelo} actualizado.");
+    }
+
     public function updateStatus(Request $request, Agencia $agencia, Vehiculo $vehiculo): RedirectResponse
     {
         $this->autorizarAgencia($agencia);

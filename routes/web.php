@@ -107,7 +107,16 @@ Route::middleware(['auth', 'role:vendedor'])->prefix('vendedor')->name('vendedor
     Route::get('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'index'])->name('vehiculos.index');
     Route::get('/agencias/{agencia}/vehiculos/nuevo', [VendedorVehiculoController::class, 'create'])->name('vehiculos.create');
     Route::post('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'store'])->name('vehiculos.store');
+    Route::get('/agencias/{agencia}/vehiculos/{vehiculo}/editar', [VendedorVehiculoController::class, 'edit'])->name('vehiculos.edit');
+    Route::put('/agencias/{agencia}/vehiculos/{vehiculo}', [VendedorVehiculoController::class, 'update'])->name('vehiculos.update');
     Route::patch('/agencias/{agencia}/vehiculos/{vehiculo}/status', [VendedorVehiculoController::class, 'updateStatus'])->name('vehiculos.status');
+
+    // Gestión de fotos
+    Route::get('/agencias/{agencia}/vehiculos/{vehiculo}/fotos', [\App\Http\Controllers\Vendedor\FotoController::class, 'index'])->name('fotos.index');
+    Route::post('/agencias/{agencia}/vehiculos/{vehiculo}/fotos', [\App\Http\Controllers\Vendedor\FotoController::class, 'agregar'])->name('fotos.agregar');
+    Route::patch('/agencias/{agencia}/vehiculos/{vehiculo}/fotos/reordenar', [\App\Http\Controllers\Vendedor\FotoController::class, 'reordenar'])->name('fotos.reordenar');
+    Route::patch('/agencias/{agencia}/vehiculos/{vehiculo}/fotos/{foto}/principal', [\App\Http\Controllers\Vendedor\FotoController::class, 'setPrincipal'])->name('fotos.principal');
+    Route::delete('/agencias/{agencia}/vehiculos/{vehiculo}/fotos/{foto}', [\App\Http\Controllers\Vendedor\FotoController::class, 'destroy'])->name('fotos.destroy');
 });
 
 /*

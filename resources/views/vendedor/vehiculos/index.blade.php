@@ -41,8 +41,9 @@
                 @foreach($vehiculos as $v)
                     <div class="flex items-center gap-3 bg-white/5 rounded-2xl p-3 border border-white/8">
 
-                        {{-- Foto --}}
-                        <div class="w-16 h-14 rounded-xl bg-white/10 overflow-hidden shrink-0">
+                        {{-- Foto (toca → editar) --}}
+                        <a href="{{ route('vendedor.vehiculos.edit', [$agencia, $v]) }}"
+                           class="w-16 h-14 rounded-xl bg-white/10 overflow-hidden shrink-0">
                             @if($v->fotoPrincipal)
                                 <img src="{{ $v->fotoPrincipal->url }}"
                                      alt="{{ $v->marca }}"
@@ -54,10 +55,11 @@
                                     </svg>
                                 </div>
                             @endif
-                        </div>
+                        </a>
 
-                        {{-- Info --}}
-                        <div class="flex-1 min-w-0">
+                        {{-- Info (toca → editar) --}}
+                        <a href="{{ route('vendedor.vehiculos.edit', [$agencia, $v]) }}"
+                           class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-white truncate">
                                 {{ $v->anio }} {{ $v->marca }} {{ $v->modelo }}
                             </p>
@@ -67,7 +69,10 @@
                             <p class="text-sm font-bold text-brand-orange mt-0.5">
                                 {{ $v->precio_formateado }}
                             </p>
-                        </div>
+                            <p class="text-[10px] text-gray-600 mt-0.5">
+                                📷 {{ $v->fotos_count ?? $v->fotos()->count() }} foto(s) · Toca para editar
+                            </p>
+                        </a>
 
                         {{-- Status + acciones --}}
                         <div class="shrink-0 text-right space-y-1">
