@@ -1,5 +1,24 @@
 <x-vendedor-layout :title="'Editar ' . $vehiculo->marca . ' ' . $vehiculo->modelo" :back="route('vendedor.vehiculos.index', $agencia)">
 
+{{-- Acceso rápido a fotos --}}
+<div class="px-4 pt-4">
+    <a href="{{ route('vendedor.fotos.index', [$agencia, $vehiculo]) }}"
+       class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 hover:bg-white/8 transition-colors">
+        <div class="w-10 h-10 rounded-xl bg-brand-orange/15 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-brand-orange" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+            </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-white">Fotos del vehículo</p>
+            <p class="text-xs text-gray-500">{{ $vehiculo->fotos()->count() }} foto(s) · Agregar, ordenar o eliminar</p>
+        </div>
+        <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+        </svg>
+    </a>
+</div>
+
 <form method="POST" action="{{ route('vendedor.vehiculos.update', [$agencia, $vehiculo]) }}"
       x-data="capturaForm()"
       class="px-4 pt-5 space-y-6 pb-4">
