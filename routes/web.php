@@ -62,6 +62,13 @@ Route::middleware(['auth', 'role:agencia'])->prefix('agencia')->name('agencia.')
     Route::patch('/leads/{lead}/leer', [AgenciaLeadController::class, 'marcarLeido'])->name('leads.leer');
     Route::get('/estadisticas', [EstadisticasController::class, 'index'])->name('estadisticas');
 
+    // Gestión de fotos (agencia)
+    Route::get('/vehiculos/{vehiculo}/fotos', [\App\Http\Controllers\Agencia\FotoController::class, 'index'])->name('vehiculos.fotos.index');
+    Route::post('/vehiculos/{vehiculo}/fotos', [\App\Http\Controllers\Agencia\FotoController::class, 'agregar'])->name('vehiculos.fotos.agregar');
+    Route::patch('/vehiculos/{vehiculo}/fotos/reordenar', [\App\Http\Controllers\Agencia\FotoController::class, 'reordenar'])->name('vehiculos.fotos.reordenar');
+    Route::patch('/vehiculos/{vehiculo}/fotos/{foto}/principal', [\App\Http\Controllers\Agencia\FotoController::class, 'setPrincipal'])->name('vehiculos.fotos.principal');
+    Route::delete('/vehiculos/{vehiculo}/fotos/{foto}', [\App\Http\Controllers\Agencia\FotoController::class, 'destroy'])->name('vehiculos.fotos.destroy');
+
     // Suscripción / Stripe Checkout
     Route::get('/suscripcion', [AgenciaSuscripcionController::class, 'index'])->name('suscripcion.index');
     Route::post('/suscripcion/checkout', [AgenciaSuscripcionController::class, 'checkout'])->name('suscripcion.checkout');
