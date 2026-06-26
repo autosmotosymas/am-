@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Excluir webhook de Stripe de validación CSRF
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
+
         // AplicarTema se ejecuta en todas las rutas web para compartir el tema del usuario a las vistas
         $middleware->web(append: [
             \App\Http\Middleware\AplicarTema::class,
