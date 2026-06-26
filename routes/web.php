@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\VendedorController;
 use App\Http\Controllers\Vendedor\DashboardController as VendedorDashboard;
 use App\Http\Controllers\Vendedor\AgenciaController as VendedorAgenciaController;
 use App\Http\Controllers\Vendedor\VehiculoController as VendedorVehiculoController;
+use App\Http\Controllers\Vendedor\PerfilController as VendedorPerfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -104,6 +105,8 @@ Route::middleware(['auth', 'role:capturador'])->prefix('captura')->name('captura
 */
 Route::middleware(['auth', 'role:vendedor'])->prefix('vendedor')->name('vendedor.')->group(function () {
     Route::get('/dashboard', [VendedorDashboard::class, 'index'])->name('dashboard');
+    Route::get('/perfil', [VendedorPerfilController::class, 'index'])->name('perfil');
+    Route::put('/perfil', [VendedorPerfilController::class, 'update'])->name('perfil.update');
 
     Route::get('/agencias', [VendedorAgenciaController::class, 'index'])->name('agencias.index');
     Route::get('/agencias/nueva', [VendedorAgenciaController::class, 'create'])->name('agencias.create');
