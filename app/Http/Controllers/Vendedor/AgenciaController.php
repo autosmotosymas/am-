@@ -114,7 +114,7 @@ class AgenciaController extends Controller
             Suscripcion::create([
                 'agencia_id'         => $agencia->id,
                 'plan_id'            => $plan->id,
-                'status'             => 'pendiente',
+                'status'             => 'prueba',
                 'fecha_inicio'       => now(),
                 'fecha_vencimiento'  => now()->addMonth(),
                 'precio_pagado'      => 0,
