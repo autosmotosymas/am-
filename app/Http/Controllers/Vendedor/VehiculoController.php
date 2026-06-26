@@ -37,7 +37,9 @@ class VehiculoController extends Controller
     {
         $this->autorizarAgencia($agencia);
 
-        return view('vendedor.vehiculos.create', compact('agencia'));
+        $catalogo = config('catalogo');
+
+        return view('vendedor.vehiculos.create', compact('agencia', 'catalogo'));
     }
 
     public function store(Request $request, Agencia $agencia): RedirectResponse

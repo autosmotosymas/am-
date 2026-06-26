@@ -84,38 +84,20 @@
         <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Datos básicos</p>
         <div class="space-y-3">
 
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Marca *</label>
-                    <input type="text" name="marca" value="{{ old('marca') }}" required
-                           class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-600"
-                           placeholder="Toyota" autocomplete="off">
-                    @error('marca') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Modelo *</label>
-                    <input type="text" name="modelo" value="{{ old('modelo') }}" required
-                           class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-600"
-                           placeholder="Corolla" autocomplete="off">
-                    @error('modelo') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
-                </div>
-            </div>
+            <x-selector-vehiculo
+                :catalogo="$catalogo"
+                tipo="{{ old('tipo', 'auto') }}"
+                oldMarca="{{ old('marca') }}"
+                oldModelo="{{ old('modelo') }}"
+                oldAnio="{{ old('anio', date('Y')) }}"
+            />
 
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Año *</label>
-                    <input type="number" name="anio" value="{{ old('anio', date('Y')) }}"
-                           min="1970" max="{{ date('Y') + 1 }}" required
-                           class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors">
-                    @error('anio') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Color *</label>
-                    <input type="text" name="color" value="{{ old('color') }}" required
-                           class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-600"
-                           placeholder="Blanco" autocomplete="off">
-                    @error('color') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
-                </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Color *</label>
+                <input type="text" name="color" value="{{ old('color') }}" required
+                       class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-600"
+                       placeholder="Blanco" autocomplete="off">
+                @error('color') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div>

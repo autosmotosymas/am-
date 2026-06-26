@@ -23,10 +23,12 @@ class InventarioController extends Controller
 
     public function create(): View
     {
-        $agencia = auth()->user()->agencia;
+        $agencia  = auth()->user()->agencia;
         abort_unless($agencia, 403, 'No tienes una agencia asignada. Contacta al administrador.');
 
-        return view('captura.nuevo', compact('agencia'));
+        $catalogo = config('catalogo');
+
+        return view('captura.nuevo', compact('agencia', 'catalogo'));
     }
 
     public function store(Request $request): RedirectResponse
