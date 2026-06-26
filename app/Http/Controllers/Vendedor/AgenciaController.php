@@ -122,19 +122,24 @@ class AgenciaController extends Controller
             'email'       => filled($data['email'] ?? null) ? $data['email'] : $agencia->email,
         ], fn($v) => $v !== null));
 
-        // Actualizar email y/o contraseña del usuario
+        // Actualizar o crear el usuario de acceso
+        $email    = filled($data['email'] ?? null)    ? $data['email']    : null;
+        $password = filled($data['password'] ?? null) ? $data['password'] : null;
+
         if ($usuario) {
             $userUpdate = [];
-            if (filled($data['email'] ?? null)) {
-                $userUpdate['email'] = $data['email'];
-                $userUpdate['name']  = $agencia->nombre;
-            }
-            if (filled($data['password'] ?? null)) {
-                $userUpdate['password'] = Hash::make($data['password']);
-            }
-            if ($userUpdate) {
-                $usuario->update($userUpdate);
-            }
+            if ($email)    { $userUpdate['email']    = $email; }
+            if ($password) { $userUpdate['password'] = Hash::make($password); }
+            if ($userUpdate) { $usuario->update($userUpdate); }
+        } elseif ($email && $password) {
+            // Agencia sin usuario aún — crearlo
+            $nuevo = User::create([
+                'name'       => $agencia->nombre,
+                'email'      => $email,
+                'password'   => Hash::make($password),
+                'agencia_id' => $agencia->id,
+            ]);
+            $nuevo->assignRole('agencia');
         }
 
         return back()->with('ok', 'Perfil actualizado.');
