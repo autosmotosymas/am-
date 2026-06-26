@@ -33,6 +33,10 @@
                     </div>
                     <p class="text-base text-muted mb-3">{{ $agencia->ciudad }}, {{ $agencia->estado }}</p>
 
+                    @if($agencia->descripcion)
+                        <p class="text-base text-muted mb-3">{{ $agencia->descripcion }}</p>
+                    @endif
+
                     <div class="flex flex-wrap gap-3">
                         @if($agencia->telefono)
                             <a href="tel:{{ $agencia->telefono }}"
