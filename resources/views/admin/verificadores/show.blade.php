@@ -44,7 +44,7 @@
                 </div>
 
                 @if($verificador->certificaciones->isEmpty())
-                    <p class="text-sm text-muted text-center py-10">Sin certificaciones registradas.</p>
+                    <p class="text-base text-muted text-center py-10">Sin certificaciones registradas.</p>
                 @else
                     <div class="divide-y divide-base">
                         @foreach($verificador->certificaciones as $cert)

@@ -35,7 +35,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="text-center py-12 text-muted text-sm">Sin verificadores.</td></tr>
+                    <tr><td colspan="5" class="text-center py-12 text-muted text-base">Sin verificadores.</td></tr>
                 @endforelse
             </tbody>
         </table>

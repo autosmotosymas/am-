@@ -4,39 +4,68 @@
     {{-- ══════════════════════════════════════════════════
          HERO
     ══════════════════════════════════════════════════ --}}
-    <section class="relative bg-[#111111] overflow-hidden">
-        {{-- Gradiente de fondo --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-[#111111] via-[#1a1a1a] to-[#111111]"></div>
-        <div class="absolute inset-0 opacity-10"
-             style="background-image: radial-gradient(circle at 20% 50%, #E8710A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #F08030 0%, transparent 40%);">
+    <section class="relative bg-[#111111] overflow-hidden"
+             x-data="{
+                 current: 0,
+                 animating: true,
+                 init() {
+                     setInterval(() => {
+                         this.animating = true;
+                         this.current++;
+                         if (this.current === 3) {
+                             setTimeout(() => {
+                                 this.animating = false;
+                                 this.current = 0;
+                                 this.$nextTick(() => setTimeout(() => { this.animating = true; }, 50));
+                             }, 3000);
+                         }
+                     }, 7000);
+                 }
+             }">
+
+        {{-- Slider: banner01, banner02, banner03, clon de banner01 — loop infinito --}}
+        <div class="absolute inset-0">
+            <div class="flex h-full w-[400%]"
+                 :style="`transform: translateX(-${current * 25}%); transition: ${animating ? 'transform 3s cubic-bezier(0.77, 0, 0.175, 1)' : 'none'}`">
+                @foreach(['banner01', 'banner02', 'banner03', 'banner01'] as $banner)
+                    <div class="w-1/4 h-full shrink-0">
+                        <img src="{{ asset('img/banners/' . $banner . '.jpg') }}"
+                             alt=""
+                             class="w-full h-full object-cover">
+                    </div>
+                @endforeach
+            </div>
+            {{-- Overlay oscuro para legibilidad del texto --}}
+            <div class="absolute inset-0 bg-black/30"></div>
         </div>
 
         <div class="container-amm relative py-20 md:py-28">
             <div class="max-w-2xl">
-                <div class="inline-flex items-center gap-2 bg-brand-orange/10 border border-brand-orange/30 text-brand-orange text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+                <div class="inline-flex items-center gap-2 bg-black/70 border border-brand-orange/60 text-brand-orange text-base font-semibold px-4 py-2 rounded-full mb-6">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"/>
                     </svg>
                     Solo agencias verificadas · Guadalajara ZMG
                 </div>
 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
+                    style="text-shadow: 2px 3px 0 rgba(0,0,0,0.4)">
                     Tu próximo auto,
                     <span class="text-brand-orange">certificado</span>
                     y sin sorpresas
                 </h1>
 
-                <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                <p class="text-xl mb-8 leading-relaxed" style="color:#fafafa; text-shadow: 2px 3px 0 rgba(0,0,0,0.4)">
                     Compramos con confianza. Cada vehículo pasa por inspección física en talleres aliados
                     antes de publicarse. Solo agencias profesionales, cero particulares.
                 </p>
 
                 {{-- Buscador rápido --}}
                 <form action="{{ route('busqueda') }}" method="GET"
-                      class="flex flex-col sm:flex-row gap-3 max-w-xl">
+                      class="flex flex-col sm:flex-row gap-3">
                     <input type="text" name="q"
                            placeholder="Marca, modelo o año…"
-                           class="flex-1 bg-white/10 border border-white/20 text-white placeholder-gray-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-brand-orange focus:bg-white/15 transition-colors">
+                           class="flex-1 bg-black/50 border border-brand-orange/60 text-white placeholder-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:border-brand-orange focus:bg-black/60 transition-colors">
                     <button type="submit" class="btn-primary whitespace-nowrap px-6 py-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
@@ -49,7 +78,7 @@
                 <div class="flex flex-wrap gap-2 mt-4">
                     @foreach(['SUV', 'Sedan', 'Pickup', 'Menos de $200k', 'Automático'] as $filtro)
                         <a href="{{ route('busqueda', ['q' => $filtro]) }}"
-                           class="text-xs text-gray-400 hover:text-brand-orange border border-white/10 hover:border-brand-orange/40 px-3 py-1.5 rounded-full transition-colors">
+                           class="text-sm text-white hover:text-brand-orange bg-black/20 hover:bg-black/90 border border-brand-orange/60 hover:border-brand-orange px-4 py-2 rounded-full transition-colors">
                             {{ $filtro }}
                         </a>
                     @endforeach
@@ -81,7 +110,7 @@
     {{-- ══════════════════════════════════════════════════
          VEHÍCULOS DESTACADOS
     ══════════════════════════════════════════════════ --}}
-    <section class="py-16 bg-page">
+    <section class="section-py bg-page">
         <div class="container-amm">
             <div class="flex items-end justify-between mb-8">
                 <div>
@@ -120,7 +149,33 @@
     {{-- ══════════════════════════════════════════════════
          CÓMO FUNCIONA LA CERTIFICACIÓN
     ══════════════════════════════════════════════════ --}}
-    <section class="py-16 bg-card border-y border-base">
+    <section class="section-py bg-card border-y border-base relative overflow-hidden">
+
+        {{-- Silueta decorativa: libreta con checkpoints --}}
+        <svg class="absolute -left-16 top-1/2 -translate-y-1/2 h-[90%] w-auto pointer-events-none select-none opacity-[0.055] text-gray-500 dark:text-gray-300"
+             viewBox="0 0 300 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            {{-- Cuerpo de la libreta --}}
+            <rect x="40" y="70" width="230" height="330" rx="14" stroke="currentColor" stroke-width="8"/>
+            {{-- Clip superior --}}
+            <rect x="108" y="38" width="94" height="50" rx="10" stroke="currentColor" stroke-width="7"/>
+            <circle cx="155" cy="63" r="10" stroke="currentColor" stroke-width="5"/>
+            {{-- Fila 1 — marcada --}}
+            <circle cx="85" cy="148" r="13" stroke="currentColor" stroke-width="5"/>
+            <path d="M77 148 L83 155 L94 140" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="115" y1="148" x2="248" y2="148" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            {{-- Fila 2 — marcada --}}
+            <circle cx="85" cy="210" r="13" stroke="currentColor" stroke-width="5"/>
+            <path d="M77 210 L83 217 L94 202" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="115" y1="210" x2="248" y2="210" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            {{-- Fila 3 — pendiente --}}
+            <circle cx="85" cy="272" r="13" stroke="currentColor" stroke-width="5"/>
+            <line x1="115" y1="272" x2="248" y2="272" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            {{-- Fila 4 — marcada --}}
+            <circle cx="85" cy="334" r="13" stroke="currentColor" stroke-width="5"/>
+            <path d="M77 334 L83 341 L94 326" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="115" y1="334" x2="248" y2="334" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+
         <div class="container-amm">
             <div class="text-center max-w-xl mx-auto mb-12">
                 <p class="text-xs font-semibold text-brand-orange uppercase tracking-widest mb-2">Nuestro diferenciador</p>
@@ -140,8 +195,8 @@
                 ] as $paso)
                     <div class="relative bg-card2 border border-base rounded-2xl p-6">
                         <span class="absolute top-5 right-5 text-4xl font-black text-brand-orange/10 select-none">{{ $paso['num'] }}</span>
-                        <div class="w-11 h-11 rounded-xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-4">
-                            <svg class="w-5 h-5 text-brand-orange" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <div class="w-[66px] h-[66px] rounded-xl bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-4">
+                            <svg class="w-[30px] h-[30px] text-brand-orange" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $paso['icon'] }}"/>
                             </svg>
                         </div>
@@ -157,7 +212,7 @@
          VEHÍCULOS CERTIFICADOS
     ══════════════════════════════════════════════════ --}}
     @if($certificados->isNotEmpty())
-    <section class="py-16 bg-page">
+    <section class="section-py bg-page">
         <div class="container-amm">
             <div class="flex items-end justify-between mb-8">
                 <div>
@@ -187,19 +242,22 @@
     {{-- ══════════════════════════════════════════════════
          CTA AGENCIAS
     ══════════════════════════════════════════════════ --}}
-    <section class="py-16 bg-[#111111]">
-        <div class="container-amm">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-orange to-[#c45e06] p-10 md:p-14 text-center">
-                <div class="absolute inset-0 opacity-10"
-                     style="background-image: radial-gradient(circle at 0% 100%, #000 0%, transparent 50%);">
-                </div>
+    <section class="relative min-h-screen flex items-center"
+             style="background-image: url('{{ asset('img/banners/agencia.jpg') }}'); background-attachment: fixed; background-size: cover; background-position: center;">
+
+        {{-- Overlay negro 30% --}}
+        <div class="absolute inset-0" style="background-color: rgba(0,0,0,0.30);"></div>
+
+        <div class="container-amm relative w-full py-20">
+            <div class="relative overflow-hidden rounded-2xl p-10 md:p-16 text-center"
+                 style="background-color: rgba(232,113,10,0.55);">
                 <div class="relative">
                     <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-                        ¿Eres agencia o lote?
+                        ¿Tienes agencia o lote?
                     </h2>
-                    <p class="text-orange-100 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+                    <p class="text-lg font-bold text-white mb-8 max-w-xl mx-auto leading-relaxed">
                         Publica tu inventario, recibe leads calificados y diferénciate con la certificación física.
-                        Planes desde <strong class="text-white">$599/mes</strong>.
+                        Planes desde $599/mes.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
                         <a href="{{ route('register') }}"
@@ -210,7 +268,7 @@
                             </svg>
                         </a>
                         <a href="#como-funciona"
-                           class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium px-7 py-3 rounded-lg transition-colors border border-white/20">
+                           class="inline-flex items-center justify-center gap-2 bg-black/20 hover:bg-black/40 text-white font-medium px-7 py-3 rounded-lg transition-colors border border-white/30">
                             Ver planes
                         </a>
                     </div>

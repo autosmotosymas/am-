@@ -20,7 +20,7 @@
 
                 {{-- Tipo --}}
                 <div>
-                    <label class="block text-xs font-semibold text-base mb-2">Tipo</label>
+                    <label class="block text-sm font-semibold text-base mb-2">Tipo</label>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['auto' => 'Auto', 'moto' => 'Moto', 'camioneta' => 'Camioneta', 'camion' => 'Camión', 'otro' => 'Otro'] as $val => $label)
                             <label class="flex items-center gap-1.5 cursor-pointer px-3 py-2 rounded-lg border border-base hover:border-brand-orange/40 transition-colors has-[:checked]:border-brand-orange has-[:checked]:bg-brand-orange/5">
@@ -37,43 +37,43 @@
                 {{-- Marca / Modelo / Año --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Marca *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Marca *</label>
                         <input type="text" name="marca" value="{{ old('marca', $vehiculo->marca ?? '') }}" required
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('marca') border-red-500/60 @enderror"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('marca') border-red-500/60 @enderror"
                                placeholder="Toyota">
                         @error('marca') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Modelo *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Modelo *</label>
                         <input type="text" name="modelo" value="{{ old('modelo', $vehiculo->modelo ?? '') }}" required
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('modelo') border-red-500/60 @enderror"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('modelo') border-red-500/60 @enderror"
                                placeholder="Corolla">
                         @error('modelo') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Año *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Año *</label>
                         <input type="number" name="anio" value="{{ old('anio', $vehiculo->anio ?? date('Y')) }}"
                                min="1970" max="{{ date('Y') + 1 }}" required
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('anio') border-red-500/60 @enderror">
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('anio') border-red-500/60 @enderror">
                         @error('anio') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 {{-- Versión --}}
                 <div>
-                    <label class="block text-xs font-semibold text-base mb-1.5">Versión / Trim</label>
+                    <label class="block text-sm font-semibold text-base mb-1.5">Versión / Trim</label>
                     <input type="text" name="version" value="{{ old('version', $vehiculo->version ?? '') }}"
-                           class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                           class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                            placeholder="SE CVT, XLE 4x4…">
                 </div>
 
                 {{-- Precio --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Precio (MXN) *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Precio (MXN) *</label>
                         <input type="number" name="precio" value="{{ old('precio', $vehiculo->precio ?? '') }}"
                                min="0" step="500" required
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('precio') border-red-500/60 @enderror"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('precio') border-red-500/60 @enderror"
                                placeholder="150000">
                         @error('precio') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -89,10 +89,10 @@
 
                 {{-- Kilometraje --}}
                 <div>
-                    <label class="block text-xs font-semibold text-base mb-1.5">Kilometraje *</label>
+                    <label class="block text-sm font-semibold text-base mb-1.5">Kilometraje *</label>
                     <input type="number" name="kilometraje" value="{{ old('kilometraje', $vehiculo->kilometraje ?? 0) }}"
                            min="0" required
-                           class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('kilometraje') border-red-500/60 @enderror"
+                           class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('kilometraje') border-red-500/60 @enderror"
                            placeholder="45000">
                     @error('kilometraje') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -100,9 +100,9 @@
                 {{-- Transmisión / Combustible --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Transmisión *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Transmisión *</label>
                         <select name="transmision"
-                                class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                                class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                             @foreach(['manual' => 'Manual', 'automatica' => 'Automática', 'cvt' => 'CVT'] as $val => $label)
                                 <option value="{{ $val }}" {{ old('transmision', $vehiculo->transmision ?? 'automatica') === $val ? 'selected' : '' }}>
                                     {{ $label }}
@@ -111,9 +111,9 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Combustible *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Combustible *</label>
                         <select name="combustible"
-                                class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                                class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                             @foreach(['gasolina' => 'Gasolina', 'diesel' => 'Diésel', 'electrico' => 'Eléctrico', 'hibrido' => 'Híbrido', 'gas' => 'Gas'] as $val => $label)
                                 <option value="{{ $val }}" {{ old('combustible', $vehiculo->combustible ?? 'gasolina') === $val ? 'selected' : '' }}>
                                     {{ $label }}
@@ -126,29 +126,29 @@
                 {{-- Color / Puertas / Cilindros / Motor --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Color *</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Color *</label>
                         <input type="text" name="color" value="{{ old('color', $vehiculo->color ?? '') }}" required
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                placeholder="Blanco">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Puertas</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Puertas</label>
                         <input type="number" name="puertas" value="{{ old('puertas', $vehiculo->puertas ?? '') }}"
                                min="2" max="6"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                placeholder="4">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Cilindros</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Cilindros</label>
                         <input type="number" name="cilindros" value="{{ old('cilindros', $vehiculo->cilindros ?? '') }}"
                                min="1" max="16"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                placeholder="4">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Motor</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Motor</label>
                         <input type="text" name="motor" value="{{ old('motor', $vehiculo->motor ?? '') }}"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                placeholder="2.0L">
                     </div>
                 </div>
@@ -156,39 +156,39 @@
                 {{-- Ciudad / Estado --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Ciudad</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Ciudad</label>
                         <input type="text" name="ciudad" value="{{ old('ciudad', $vehiculo->ciudad ?? 'Guadalajara') }}"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Estado</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Estado</label>
                         <input type="text" name="estado" value="{{ old('estado', $vehiculo->estado ?? 'Jalisco') }}"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                     </div>
                 </div>
 
                 {{-- VIN / Placas --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">VIN</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">VIN</label>
                         <input type="text" name="vin" value="{{ old('vin', $vehiculo->vin ?? '') }}"
                                maxlength="17"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors font-mono"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors font-mono"
                                placeholder="1HGCM82633A004352">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-base mb-1.5">Placas</label>
+                        <label class="block text-sm font-semibold text-base mb-1.5">Placas</label>
                         <input type="text" name="placas" value="{{ old('placas', $vehiculo->placas ?? '') }}"
-                               class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors font-mono"
+                               class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors font-mono"
                                placeholder="ABC-1234">
                     </div>
                 </div>
 
                 {{-- Descripción --}}
                 <div>
-                    <label class="block text-xs font-semibold text-base mb-1.5">Descripción</label>
+                    <label class="block text-sm font-semibold text-base mb-1.5">Descripción</label>
                     <textarea name="descripcion" rows="4"
-                              class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors resize-none"
+                              class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors resize-none"
                               placeholder="Describe el estado del vehículo, equipamiento, historial de mantenimiento…">{{ old('descripcion', $vehiculo->descripcion ?? '') }}</textarea>
                 </div>
 
@@ -196,9 +196,9 @@
                 @if($editando)
                     <div class="grid grid-cols-2 gap-4 pt-2 border-t border-base">
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Status</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Status</label>
                             <select name="status"
-                                    class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                                    class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                                 @foreach(['disponible' => 'Activo', 'inactivo' => 'Pausado', 'apartado' => 'Apartado', 'vendido' => 'Vendido'] as $val => $label)
                                     <option value="{{ $val }}" {{ old('status', $vehiculo->status) === $val ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
@@ -248,7 +248,7 @@
                         <svg class="w-8 h-8 text-muted mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                         </svg>
-                        <p class="text-sm text-muted">Arrastra fotos aquí o <span class="text-brand-orange">selecciona</span></p>
+                        <p class="text-base text-muted">Arrastra fotos aquí o <span class="text-brand-orange">selecciona</span></p>
                         <p class="text-xs text-gray-600 mt-1" x-text="files.length ? files.length + ' archivo(s) seleccionado(s)' : 'JPG, PNG, WebP'"></p>
                         <input type="file" name="fotos[]" multiple accept="image/*" class="hidden"
                                @change="files = Array.from($event.target.files)">

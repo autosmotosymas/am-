@@ -79,7 +79,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center py-12 text-muted text-sm">Sin suscripciones en esta categoría.</td>
+                        <td colspan="6" class="text-center py-12 text-muted text-base">Sin suscripciones en esta categoría.</td>
                     </tr>
                 @endforelse
             </tbody>

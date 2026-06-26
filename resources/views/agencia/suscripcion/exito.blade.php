@@ -8,7 +8,7 @@
         </div>
 
         <h1 class="text-2xl font-bold text-base mb-2">¡Pago exitoso!</h1>
-        <p class="text-sm text-muted mb-8">
+        <p class="text-base text-muted mb-8">
             Tu suscripción ya está activa. Puedes empezar a publicar tu inventario ahora mismo.
         </p>
 

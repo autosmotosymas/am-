@@ -41,7 +41,7 @@
     {{-- Info --}}
     <div class="p-4 flex flex-col flex-1">
         <div class="flex items-start justify-between gap-2 mb-1">
-            <h3 class="font-semibold text-base text-sm leading-tight group-hover:text-brand-orange transition-colors">
+            <h3 class="font-semibold text-base leading-tight group-hover:text-brand-orange transition-colors">
                 {{ $vehiculo->anio }} {{ $vehiculo->marca }} {{ $vehiculo->modelo }}
             </h3>
         </div>
@@ -68,7 +68,7 @@
 
         {{-- Agencia --}}
         @if($vehiculo->agencia)
-            <p class="text-xs text-muted mt-2 truncate">
+            <p class="text-sm text-muted mt-2 truncate">
                 {{ $vehiculo->agencia->nombre }}
                 @if($vehiculo->agencia->verificada)
                     <span class="text-brand-orange">✓</span>

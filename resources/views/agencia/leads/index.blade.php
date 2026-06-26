@@ -28,7 +28,7 @@
             <svg class="w-10 h-10 mx-auto mb-3 text-gray-600" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
             </svg>
-            <p class="text-sm text-muted">Sin leads en esta categoría.</p>
+            <p class="text-base text-muted">Sin leads en esta categoría.</p>
         </div>
     @else
         <div class="space-y-3">
@@ -65,7 +65,7 @@
                             @endif
 
                             {{-- Contacto --}}
-                            <div class="flex flex-wrap gap-4 mt-3 text-sm">
+                            <div class="flex flex-wrap gap-4 mt-3 text-base">
                                 <a href="tel:{{ preg_replace('/\D/', '', $lead->telefono) }}"
                                    class="flex items-center gap-1.5 text-muted hover:text-brand-orange transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
 
                             {{-- Mensaje --}}
                             @if($lead->mensaje)
-                                <p class="mt-3 text-sm text-muted bg-card2 rounded-xl px-4 py-3 leading-relaxed">
+                                <p class="mt-3 text-base text-muted bg-card2 rounded-xl px-4 py-3 leading-relaxed">
                                     "{{ $lead->mensaje }}"
                                 </p>
                             @endif

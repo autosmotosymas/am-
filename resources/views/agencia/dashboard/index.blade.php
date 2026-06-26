@@ -25,7 +25,7 @@
             </div>
 
             @if($leadsRecientes->isEmpty())
-                <p class="text-sm text-muted text-center py-10">Aún no hay leads.</p>
+                <p class="text-base text-muted text-center py-10">Aún no hay leads.</p>
             @else
                 <div class="divide-y divide-base">
                     @foreach($leadsRecientes as $lead)
@@ -75,7 +75,7 @@
                         @endif
                     </div>
                 @else
-                    <p class="text-sm text-red-400">Sin suscripción activa.</p>
+                    <p class="text-base text-red-400">Sin suscripción activa.</p>
                     <a href="#" class="btn-primary mt-3 text-xs">Contratar plan</a>
                 @endif
             </div>
@@ -86,7 +86,7 @@
                     <h3 class="font-semibold text-base">Más vistos</h3>
                 </div>
                 @if($vehiculosDestacados->isEmpty())
-                    <p class="text-sm text-muted text-center py-8">Sin datos aún.</p>
+                    <p class="text-base text-muted text-center py-8">Sin datos aún.</p>
                 @else
                     <div class="divide-y divide-base">
                         @foreach($vehiculosDestacados as $v)

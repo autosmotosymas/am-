@@ -20,6 +20,10 @@ use App\Http\Controllers\Admin\AgenciaController as AdminAgenciaController;
 use App\Http\Controllers\Admin\VerificadorController;
 use App\Http\Controllers\Admin\CertificacionController;
 use App\Http\Controllers\Admin\SuscripcionController;
+use App\Http\Controllers\Admin\VendedorController;
+use App\Http\Controllers\Vendedor\DashboardController as VendedorDashboard;
+use App\Http\Controllers\Vendedor\AgenciaController as VendedorAgenciaController;
+use App\Http\Controllers\Vendedor\VehiculoController as VendedorVehiculoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -86,6 +90,23 @@ Route::middleware(['auth', 'role:capturador'])->prefix('captura')->name('captura
 
 /*
 |--------------------------------------------------------------------------
+| App de vendedor (auth + rol vendedor)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:vendedor'])->prefix('vendedor')->name('vendedor.')->group(function () {
+    Route::get('/dashboard', [VendedorDashboard::class, 'index'])->name('dashboard');
+
+    Route::get('/agencias', [VendedorAgenciaController::class, 'index'])->name('agencias.index');
+    Route::get('/agencias/nueva', [VendedorAgenciaController::class, 'create'])->name('agencias.create');
+    Route::post('/agencias', [VendedorAgenciaController::class, 'store'])->name('agencias.store');
+
+    Route::get('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'index'])->name('vehiculos.index');
+    Route::get('/agencias/{agencia}/vehiculos/nuevo', [VendedorVehiculoController::class, 'create'])->name('vehiculos.create');
+    Route::post('/agencias/{agencia}/vehiculos', [VendedorVehiculoController::class, 'store'])->name('vehiculos.store');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Panel admin (auth + rol admin)
 |--------------------------------------------------------------------------
 */
@@ -105,6 +126,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('suscripciones', SuscripcionController::class);
     Route::patch('suscripciones/{suscripcione}/cancelar', [SuscripcionController::class, 'cancelar'])->name('suscripciones.cancelar');
+
+    Route::resource('vendedores', VendedorController::class)
+         ->only(['index', 'create', 'store', 'show', 'destroy']);
 });
 
 require __DIR__.'/auth.php';

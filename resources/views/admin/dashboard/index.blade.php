@@ -91,7 +91,7 @@
             {{-- Leads de hoy --}}
             <div class="bg-card border border-base rounded-2xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-base">
-                    <h3 class="font-semibold text-base text-sm">Leads de hoy</h3>
+                    <h3 class="font-semibold text-base">Leads de hoy</h3>
                 </div>
                 @if($leadsHoy->isEmpty())
                     <p class="text-xs text-muted text-center py-6">Sin leads hoy.</p>

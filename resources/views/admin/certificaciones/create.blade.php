@@ -5,9 +5,9 @@
         @csrf
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Vehículo *</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Vehículo *</label>
             <select name="vehiculo_id" required
-                    class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('vehiculo_id') border-red-500/60 @enderror">
+                    class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('vehiculo_id') border-red-500/60 @enderror">
                 <option value="">Seleccionar vehículo…</option>
                 @foreach($vehiculos as $v)
                     <option value="{{ $v->id }}" {{ old('vehiculo_id') == $v->id ? 'selected' : '' }}>
@@ -19,9 +19,9 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Verificador *</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Verificador *</label>
             <select name="verificador_id" required
-                    class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('verificador_id') border-red-500/60 @enderror">
+                    class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('verificador_id') border-red-500/60 @enderror">
                 <option value="">Seleccionar verificador…</option>
                 @foreach($verificadores as $ver)
                     <option value="{{ $ver->id }}" {{ old('verificador_id') == $ver->id ? 'selected' : '' }}>
@@ -33,34 +33,34 @@
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Fecha de inspección *</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Fecha de inspección *</label>
             <input type="date" name="fecha_inspeccion" value="{{ old('fecha_inspeccion', date('Y-m-d')) }}" required
-                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('fecha_inspeccion') border-red-500/60 @enderror">
+                   class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('fecha_inspeccion') border-red-500/60 @enderror">
             @error('fecha_inspeccion') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs font-semibold text-base mb-1.5">Resultado *</label>
+                <label class="block text-sm font-semibold text-base mb-1.5">Resultado *</label>
                 <select name="resultado" required
-                        class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                        class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
                     @foreach(['pendiente' => 'Pendiente', 'aprobado' => 'Aprobado', 'rechazado' => 'Rechazado'] as $val => $label)
                         <option value="{{ $val }}" {{ old('resultado', 'pendiente') === $val ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-base mb-1.5">Puntaje (0-100)</label>
+                <label class="block text-sm font-semibold text-base mb-1.5">Puntaje (0-100)</label>
                 <input type="number" name="puntaje" value="{{ old('puntaje') }}" min="0" max="100"
-                       class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('puntaje') border-red-500/60 @enderror">
+                       class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('puntaje') border-red-500/60 @enderror">
                 @error('puntaje') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Observaciones</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Observaciones</label>
             <textarea name="observaciones" rows="3"
-                      class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors resize-none @error('observaciones') border-red-500/60 @enderror">{{ old('observaciones') }}</textarea>
+                      class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors resize-none @error('observaciones') border-red-500/60 @enderror">{{ old('observaciones') }}</textarea>
             @error('observaciones') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
         </div>
 

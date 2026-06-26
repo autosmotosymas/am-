@@ -46,13 +46,13 @@
             </a>
 
             {{-- Links desktop --}}
-            <div class="hidden md:flex items-center gap-1">
+            <div class="hidden md:flex items-center gap-2">
                 <a href="{{ route('home') }}"
-                   class="btn-ghost {{ request()->routeIs('home') ? 'text-brand-orange' : '' }}">
+                   class="btn-ghost text-base font-semibold {{ request()->routeIs('home') ? 'text-brand-orange' : '' }}">
                     Inicio
                 </a>
                 <a href="{{ route('busqueda') }}"
-                   class="btn-ghost {{ request()->routeIs('busqueda') ? 'text-brand-orange' : '' }}">
+                   class="btn-ghost text-base font-semibold {{ request()->routeIs('busqueda') ? 'text-brand-orange' : '' }}">
                     Buscar autos
                 </a>
             </div>
@@ -107,31 +107,31 @@
                         </button>
 
                         <div x-show="open" x-transition
-                             class="absolute right-0 mt-2 w-52 bg-card border border-base rounded-xl shadow-lg py-1 z-50">
+                             class="absolute right-0 mt-2 w-56 bg-card border border-base rounded-xl shadow-lg py-1 z-50">
 
                             @hasrole('admin')
                                 <a href="{{ route('admin.dashboard') }}"
-                                   class="flex items-center gap-2 px-4 py-2.5 text-sm text-base hover:bg-card2 transition-colors">
+                                   class="flex items-center gap-2 px-4 py-3 text-base text-base hover:bg-card2 transition-colors">
                                     Panel Admin
                                 </a>
                             @endhasrole
 
                             @hasrole('agencia')
                                 <a href="{{ route('agencia.dashboard') }}"
-                                   class="flex items-center gap-2 px-4 py-2.5 text-sm text-base hover:bg-card2 transition-colors">
+                                   class="flex items-center gap-2 px-4 py-3 text-base text-base hover:bg-card2 transition-colors">
                                     Mi Agencia
                                 </a>
                             @endhasrole
 
                             @hasrole('capturador')
                                 <a href="{{ route('captura.index') }}"
-                                   class="flex items-center gap-2 px-4 py-2.5 text-sm text-base hover:bg-card2 transition-colors">
+                                   class="flex items-center gap-2 px-4 py-3 text-base text-base hover:bg-card2 transition-colors">
                                     Captura
                                 </a>
                             @endhasrole
 
                             <a href="{{ route('perfil.index') }}"
-                               class="flex items-center gap-2 px-4 py-2.5 text-sm text-base hover:bg-card2 transition-colors">
+                               class="flex items-center gap-2 px-4 py-3 text-base text-base hover:bg-card2 transition-colors">
                                 Mi perfil
                             </a>
 
@@ -140,7 +140,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
-                                        class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-card2 transition-colors">
+                                        class="w-full text-left flex items-center gap-2 px-4 py-3 text-base text-red-500 hover:bg-card2 transition-colors">
                                     Cerrar sesión
                                 </button>
                             </form>
@@ -167,10 +167,10 @@
 
         {{-- Menú móvil --}}
         <div x-show="mobileOpen" x-transition class="md:hidden border-t border-base bg-card px-4 py-3 space-y-1">
-            <a href="{{ route('home') }}" class="block px-3 py-2.5 text-sm font-medium text-base hover:text-brand-orange rounded-lg hover:bg-card2 transition-colors">
+            <a href="{{ route('home') }}" class="block px-3 py-3 text-base font-semibold text-base hover:text-brand-orange rounded-xl hover:bg-card2 transition-colors">
                 Inicio
             </a>
-            <a href="{{ route('busqueda') }}" class="block px-3 py-2.5 text-sm font-medium text-base hover:text-brand-orange rounded-lg hover:bg-card2 transition-colors">
+            <a href="{{ route('busqueda') }}" class="block px-3 py-3 text-base font-semibold text-base hover:text-brand-orange rounded-xl hover:bg-card2 transition-colors">
                 Buscar autos
             </a>
             @guest
@@ -198,46 +198,46 @@
                     <a href="{{ route('home') }}" class="inline-block mb-3">
                         <img src="{{ asset('img/logo_amm.png') }}" alt="AutosMotosYMás" class="w-[200px] h-auto">
                     </a>
-                    <p class="text-muted text-sm leading-relaxed">
+                    <p class="text-muted text-base leading-relaxed">
                         Plataforma de vehículos seminuevos certificados en Guadalajara y Zona Metropolitana.
                     </p>
                 </div>
 
                 {{-- Explorar --}}
                 <div>
-                    <h3 class="text-sm font-semibold text-base mb-3">Explorar</h3>
+                    <h3 class="text-base font-bold text-base mb-4">Explorar</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('busqueda') }}" class="text-sm text-muted hover:text-brand-orange transition-colors">Buscar autos</a></li>
-                        <li><a href="{{ route('busqueda', ['tipo' => 'sedan']) }}" class="text-sm text-muted hover:text-brand-orange transition-colors">Sedanes</a></li>
-                        <li><a href="{{ route('busqueda', ['tipo' => 'suv']) }}" class="text-sm text-muted hover:text-brand-orange transition-colors">SUVs</a></li>
-                        <li><a href="{{ route('busqueda', ['tipo' => 'pickup']) }}" class="text-sm text-muted hover:text-brand-orange transition-colors">Pickups</a></li>
+                        <li><a href="{{ route('busqueda') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Buscar autos</a></li>
+                        <li><a href="{{ route('busqueda', ['tipo' => 'sedan']) }}" class="text-base text-muted hover:text-brand-orange transition-colors">Sedanes</a></li>
+                        <li><a href="{{ route('busqueda', ['tipo' => 'suv']) }}" class="text-base text-muted hover:text-brand-orange transition-colors">SUVs</a></li>
+                        <li><a href="{{ route('busqueda', ['tipo' => 'pickup']) }}" class="text-base text-muted hover:text-brand-orange transition-colors">Pickups</a></li>
                     </ul>
                 </div>
 
                 {{-- Agencias --}}
                 <div>
-                    <h3 class="text-sm font-semibold text-base mb-3">Para agencias</h3>
+                    <h3 class="text-base font-bold text-base mb-4">Para agencias</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('register') }}" class="text-sm text-muted hover:text-brand-orange transition-colors">Publicar inventario</a></li>
-                        <li><a href="{{ route('login') }}" class="text-sm text-muted hover:text-brand-orange transition-colors">Acceso agencia</a></li>
+                        <li><a href="{{ route('register') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Publicar inventario</a></li>
+                        <li><a href="{{ route('login') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Acceso agencia</a></li>
                     </ul>
                 </div>
 
                 {{-- Legal --}}
                 <div>
-                    <h3 class="text-sm font-semibold text-base mb-3">Legal</h3>
+                    <h3 class="text-base font-bold text-base mb-4">Legal</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm text-muted hover:text-brand-orange transition-colors">Aviso de privacidad</a></li>
-                        <li><a href="#" class="text-sm text-muted hover:text-brand-orange transition-colors">Términos y condiciones</a></li>
+                        <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Aviso de privacidad</a></li>
+                        <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Términos y condiciones</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-base mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="text-xs text-muted">
+                <p class="text-sm text-muted">
                     &copy; {{ date('Y') }} AutosMotosYMás.com.mx — Guadalajara, Jalisco
                 </p>
-                <p class="text-xs text-muted">
+                <p class="text-sm text-muted">
                     Vehículos <span class="text-brand-orange font-medium">certificados</span> por talleres aliados
                 </p>
             </div>

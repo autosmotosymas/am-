@@ -21,7 +21,7 @@
         <div class="bg-card border border-base rounded-2xl p-6">
             <h3 class="font-semibold text-base mb-5">Leads últimos 6 meses</h3>
             @if($leadsPorMes->isEmpty())
-                <p class="text-sm text-muted text-center py-8">Sin datos aún.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos aún.</p>
             @else
                 @php $maxLeads = $leadsPorMes->max() ?: 1; @endphp
                 <div class="space-y-3">
@@ -47,7 +47,7 @@
         <div class="bg-card border border-base rounded-2xl p-6">
             <h3 class="font-semibold text-base mb-5">Canal de contacto preferido</h3>
             @if($leadsPorTipo->isEmpty())
-                <p class="text-sm text-muted text-center py-8">Sin datos aún.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos aún.</p>
             @else
                 @php
                     $totalTipo = $leadsPorTipo->sum();
@@ -75,7 +75,7 @@
                 <h3 class="font-semibold text-base">Top vehículos por vistas</h3>
             </div>
             @if($topVistas->isEmpty())
-                <p class="text-sm text-muted text-center py-8">Sin datos.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos.</p>
             @else
                 <div class="divide-y divide-base">
                     @foreach($topVistas as $i => $v)
@@ -103,7 +103,7 @@
                 <h3 class="font-semibold text-base">Top vehículos por leads</h3>
             </div>
             @if($topLeads->isEmpty())
-                <p class="text-sm text-muted text-center py-8">Sin datos.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos.</p>
             @else
                 <div class="divide-y divide-base">
                     @foreach($topLeads as $i => $v)

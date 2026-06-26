@@ -109,7 +109,7 @@
                         ] as [$label, $valor])
                             <div class="bg-card2 rounded-xl p-3">
                                 <p class="text-xs text-muted mb-0.5">{{ $label }}</p>
-                                <p class="text-sm font-medium text-base">{{ $valor }}</p>
+                                <p class="text-base font-medium text-base">{{ $valor }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -119,7 +119,7 @@
                 @if($vehiculo->descripcion)
                     <div class="bg-card border border-base rounded-2xl p-6">
                         <h2 class="font-semibold text-base mb-3">Descripción</h2>
-                        <p class="text-sm text-muted leading-relaxed whitespace-pre-line">{{ $vehiculo->descripcion }}</p>
+                        <p class="text-base text-muted leading-relaxed whitespace-pre-line">{{ $vehiculo->descripcion }}</p>
                     </div>
                 @endif
 
@@ -177,7 +177,7 @@
                 <div class="bg-card border border-base rounded-2xl p-6">
                     <div class="flex items-start justify-between gap-3 mb-1">
                         <div>
-                            <h1 class="text-lg font-bold text-base leading-tight">{{ $titulo }}</h1>
+                            <h1 class="text-2xl font-bold text-base leading-tight">{{ $titulo }}</h1>
                             @if($vehiculo->version)
                                 <p class="text-xs text-muted mt-0.5">{{ $vehiculo->version }}</p>
                             @endif
@@ -196,7 +196,7 @@
                     @endif
 
                     {{-- Specs rápidos --}}
-                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted mt-4 pt-4 border-t border-base">
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted mt-4 pt-4 border-t border-base">
                         <span>{{ $vehiculo->kilometraje_formateado }}</span>
                         <span>·</span>
                         <span class="capitalize">{{ $vehiculo->transmision }}</span>
@@ -232,43 +232,43 @@
                             <input type="hidden" name="vehiculo_id" value="{{ $vehiculo->id }}">
 
                             <div>
-                                <label class="block text-xs font-medium text-base mb-1">Nombre *</label>
+                                <label class="block text-sm font-medium text-base mb-1.5">Nombre *</label>
                                 <input type="text" name="nombre"
                                        value="{{ old('nombre', auth()->user()?->name) }}"
                                        required
-                                       class="w-full bg-card2 border border-base text-base text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500"
+                                       class="w-full bg-card2 border border-base text-base rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500"
                                        placeholder="Tu nombre completo">
                                 @error('nombre') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
-                                <label class="block text-xs font-medium text-base mb-1">Teléfono *</label>
+                                <label class="block text-sm font-medium text-base mb-1.5">Teléfono *</label>
                                 <input type="tel" name="telefono"
                                        value="{{ old('telefono') }}"
                                        required
-                                       class="w-full bg-card2 border border-base text-base text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500"
+                                       class="w-full bg-card2 border border-base text-base rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500"
                                        placeholder="33 1234 5678">
                                 @error('telefono') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
-                                <label class="block text-xs font-medium text-base mb-1">¿Cómo prefieres que te contacten?</label>
+                                <label class="block text-sm font-medium text-base mb-1.5">¿Cómo prefieres que te contacten?</label>
                                 <div class="grid grid-cols-2 gap-2">
                                     @foreach(['whatsapp' => 'WhatsApp', 'llamada' => 'Llamada', 'email' => 'Email', 'visita' => 'Visita'] as $val => $label)
                                         <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg border border-base hover:border-brand-orange/40 transition-colors has-[:checked]:border-brand-orange has-[:checked]:bg-brand-orange/5">
                                             <input type="radio" name="tipo" value="{{ $val }}"
                                                    {{ old('tipo', 'whatsapp') === $val ? 'checked' : '' }}
                                                    class="accent-brand-orange">
-                                            <span class="text-xs text-base">{{ $label }}</span>
+                                            <span class="text-sm text-base">{{ $label }}</span>
                                         </label>
                                     @endforeach
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-medium text-base mb-1">Mensaje (opcional)</label>
+                                <label class="block text-sm font-medium text-base mb-1.5">Mensaje (opcional)</label>
                                 <textarea name="mensaje" rows="3"
-                                          class="w-full bg-card2 border border-base text-base text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500 resize-none"
+                                          class="w-full bg-card2 border border-base text-base rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500 resize-none"
                                           placeholder="¿Tienes alguna pregunta sobre el vehículo?">{{ old('mensaje') }}</textarea>
                             </div>
 
@@ -316,7 +316,7 @@
         {{-- ══════════════ RELACIONADOS ══════════════ --}}
         @if($relacionados->isNotEmpty())
             <div class="mt-14">
-                <h2 class="text-xl font-bold text-base mb-6">También te puede interesar</h2>
+                <h2 class="text-2xl font-bold text-base mb-6">También te puede interesar</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                     @foreach($relacionados as $v)
                         <x-tarjeta-vehiculo :vehiculo="$v" />

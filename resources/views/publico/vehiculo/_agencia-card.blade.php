@@ -15,20 +15,20 @@
         @endif
 
         <div class="flex-1 min-w-0">
-            <p class="font-semibold text-base text-sm group-hover:text-brand-orange transition-colors truncate">
+            <p class="font-semibold text-base group-hover:text-brand-orange transition-colors truncate">
                 {{ $agencia->nombre }}
                 @if($agencia->verificada)
                     <span class="text-brand-orange text-xs">✓</span>
                 @endif
             </p>
-            <p class="text-xs text-muted">{{ $agencia->ciudad }}, {{ $agencia->estado }}</p>
+            <p class="text-sm text-muted">{{ $agencia->ciudad }}, {{ $agencia->estado }}</p>
         </div>
         <svg class="w-4 h-4 text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
         </svg>
     </a>
 
-    <div class="space-y-2 text-sm border-t border-base pt-4">
+    <div class="space-y-2 text-base border-t border-base pt-4">
         @if($agencia->telefono)
             <a href="tel:{{ preg_replace('/\D/', '', $agencia->telefono) }}"
                class="flex items-center gap-2 text-muted hover:text-brand-orange transition-colors">

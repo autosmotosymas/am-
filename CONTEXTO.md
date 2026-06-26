@@ -18,15 +18,13 @@ Plataforma de venta de vehículos seminuevos para **Guadalajara / ZMG**.
 |------|-----------|
 | Backend | Laravel 13 (PHP 8.2+) |
 | Frontend | Blade + Tailwind CSS v3 + Alpine.js |
-| Base de datos | MySQL 8 |
+| Base de datos | MySQL 8 — DB: `amm_db` |
 | Auth | Laravel Breeze (Blade) |
 | Roles/permisos | Spatie Laravel Permission |
-| Imágenes | Spatie MediaLibrary + Intervention Image |
-| Slugs | Spatie Laravel Sluggable |
-| SEO | Artesaos SEOTools |
-| Push notifications | laravel-notification-channels/webpush |
+| Pagos | **Stripe** (NO Conekta — decisión tomada) |
 | Build | Vite + npm |
 | Cola de jobs | Database queue |
+| Mail | SMTP cPanel — mco10.prodns.mx port 465 (smtps) |
 
 ---
 
@@ -35,11 +33,13 @@ Plataforma de venta de vehículos seminuevos para **Guadalajara / ZMG**.
 - **Dark/Light mode**: clase `dark` en `<html>`. Config: `darkMode: 'class'` en tailwind
 - **Container**: máx 1280px centrado — clase CSS `.container-amm`
 - **Paleta**: Naranja `#E8710A` + Negro `#111111` (del logo)
-- **PWA**: manifest.json + Service Worker con Workbox (pendiente de implementar)
 - **Mobile first**: breakpoints Tailwind, diseño desde 390px hacia arriba
-- **URLs semánticas con slugs**: `/autos/toyota-corolla-se-cvt-2022` (NO `/ficha.php?id=2`)
+- **URLs semánticas con slugs**: `/autos/toyota-corolla-se-cvt-2022`
 - **Route Model Binding** por slug en Vehiculo y Agencia
 - **Sin React/Vue** — todo server-side rendering con Blade
+- **Pagos con Stripe** — Checkout mode subscription + webhook handling
+- **Tipografía**: Figtree (Google Fonts vía bunny.net) — text-base en todo el sistema
+- **Secciones**: padding vertical 120px con clase `.section-py`
 
 ---
 
@@ -54,26 +54,30 @@ Plataforma de venta de vehículos seminuevos para **Guadalajara / ZMG**.
 
 ---
 
-## Base de datos — 18 tablas creadas y migradas
+## Base de datos — tablas
 
 ### Tablas del negocio
-- `planes` — 2 tiers: Básico ($599/mes) y Premium ($1,299/mes)
+- `planes` — 2 tiers: Básico ($599/mes, stripe_price_id guardado) y Premium ($1,299/mes, stripe_price_id guardado)
 - `verificadores` — talleres aliados que hacen inspecciones físicas
 - `agencias` — lotes y distribuidores registrados
 - `vehiculos` — inventario central (con slug, status, precio, specs)
-- `vehiculo_fotos` — fotos por vehículo (tipo: exterior/interior/motor/vin/doc)
+- `vehiculo_fotos` — fotos por vehículo
 - `certificaciones` — resultado de inspección física con checklist JSON
-- `suscripciones` — contrato agencia↔plan con Conekta ID
-- `pagos` — historial de cobros (tarjeta MX / OXXO via Conekta)
-- `leads` — mensajes de comprador → agencia (formulario interno, sin WhatsApp)
+- `suscripciones` — contrato agencia↔plan con IDs de Stripe
+- `pagos` — historial de cobros
+- `leads` — mensajes de comprador → agencia
 - `seguimientos` — "seguir este auto" con alertas de precio y status
-- `notificaciones` — cola de notifs (email + push PWA)
 
 ### Tablas Laravel/paquetes
 - `users`, `sessions`, `cache`, `jobs`
-- `media` (Spatie MediaLibrary)
 - `permissions`, `roles`, `model_has_permissions`, `model_has_roles`, `role_has_permissions`
-- `push_subscriptions`
+
+### IMPORTANTE — modelos con tabla explícita
+Laravel pluraliza mal los nombres en español. Estos modelos tienen `protected $table`:
+- `Plan` → `planes`
+- `Certificacion` → `certificaciones`
+- `Suscripcion` → `suscripciones`
+- `Verificador` → `verificadores`
 
 ---
 
@@ -84,13 +88,6 @@ borrador → publicado → [inspeccion_agendada] → certificado
                 ↓                                    ↓
              pausado                              apartado → vendido
 ```
-
-- `borrador`: capturado, pendiente de revisión de agencia
-- `publicado`: visible con badge ámbar "Sin certificar"
-- `certificado`: badge verde "✓ Certificado AutosMotosYMás"
-- `apartado`: badge azul — en proceso de compra
-- `vendido`: sale del catálogo activo
-- `pausado`: agencia lo ocultó temporalmente
 
 ---
 
@@ -107,171 +104,296 @@ borrador → publicado → [inspeccion_agendada] → certificado
 
 ---
 
-## Estructura de controllers
+## Stripe — configuración actual
 
-```
-App/Http/Controllers/
-├── Publico/
-│   ├── HomeController
-│   ├── BusquedaController
-│   ├── VehiculoController     ← show() usa Route Model Binding por slug
-│   ├── AgenciaController      ← show() usa Route Model Binding por slug
-│   └── LeadController
-├── Perfil/
-│   ├── PerfilController
-│   └── TemaController         ← AJAX para guardar dark/light en users.tema
-├── Agencia/
-│   ├── DashboardController
-│   ├── VehiculoController     ← CRUD completo del inventario
-│   ├── LeadController
-│   └── EstadisticasController
-├── Captura/
-│   └── InventarioController   ← app móvil PWA de captura en campo
-└── Admin/
-    ├── DashboardController
-    ├── AgenciaController
-    ├── VerificadorController
-    ├── CertificacionController
-    └── SuscripcionController
-```
+- **Modo**: TEST (pendiente cambiar a LIVE para producción real)
+- `STRIPE_KEY` = pk_test_51GqLY5L42wZLmAlakJALM3E3x... (completa en .env del servidor)
+- `STRIPE_SECRET` = sk_test_51GqLY5L42wZLmAlaEUE9D7l5... (completa en .env del servidor)
+- `STRIPE_WEBHOOK_SECRET` = **PENDIENTE** — configurar webhook en Stripe Dashboard test mode → `https://autosmotosymas.mx/stripe/webhook`
+- Plan Básico synced → `price_1TWkfNL42wZLmAlaKwwto21x`
+- Plan Premium synced → `price_1TWkfNL42wZLmAlaHYYW6iru`
+- Comando para sincronizar: `php artisan stripe:sync-plans`
+- Webhooks a registrar: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`, `customer.subscription.updated`
 
 ---
 
-## Estructura de vistas Blade
+## Mail — configuración actual
 
+```env
+MAIL_MAILER=smtp
+MAIL_SCHEME=smtps
+MAIL_HOST=mco10.prodns.mx
+MAIL_PORT=465
+MAIL_USERNAME=noreply@autosmotosymas.mx
+MAIL_FROM_ADDRESS=noreply@autosmotosymas.mx
+MAIL_FROM_NAME="AutosMotosYMás"
 ```
-resources/views/
-├── layouts/
-│   └── app.blade.php          ← Layout principal (PENDIENTE DE CREAR)
-├── components/                ← Componentes reutilizables (PENDIENTE)
-├── publico/
-│   ├── home/
-│   ├── busqueda/
-│   ├── vehiculo/
-│   └── agencia/
-├── perfil/
-├── agencia/
-│   ├── dashboard/
-│   ├── vehiculos/
-│   ├── leads/
-│   └── estadisticas/
-├── captura/
-└── admin/
-    ├── dashboard/
-    ├── agencias/
-    ├── verificadores/
-    └── suscripciones/
-```
-
----
-
-## SEO — URLs semánticas definidas
-
-```php
-// Cara pública
-GET /                           → home
-GET /busqueda                   → búsqueda con filtros
-GET /autos/{vehiculo:slug}      → ficha del vehículo
-GET /agencias/{agencia:slug}    → perfil de agencia
-GET /autos/marca/{marca}        → categoría por marca (indexable)
-GET /autos/tipo/{tipo}          → categoría por tipo
-```
-
----
-
-## Modelos — traits importantes
-
-**Vehiculo.php** usa:
-- `HasSlug` de Spatie — genera slug desde marca+modelo+version+anio
-- `getRouteKeyName()` retorna `'slug'`
-- `doNotGenerateSlugsOnUpdate()` — slug no cambia si editan el vehículo
-
-**Agencia.php** usa:
-- `HasSlug` de Spatie — genera slug desde nombre
-- `getRouteKeyName()` retorna `'slug'`
-
----
-
-## Pagos — Conekta
-
-- Método principal: tarjeta MX + OXXO via **Conekta**
-- Columna `conekta_sub_id` en `suscripciones` para ID del plan recurrente
-- Columna `referencia_externa` en `pagos` para ID de cada cobro
-- Webhooks de Conekta confirman pagos automáticamente
-- Primeros clientes: cobro manual (columna `metodo = 'manual'` en `pagos`)
-
----
-
-## Dark mode — implementación
-
-- Tailwind: `darkMode: 'class'`
-- Script anti-flash en `<head>` ANTES del CSS (lee localStorage)
-- Toggle en navbar: guarda en `localStorage` + AJAX a `/perfil/tema` si logueado
-- Columna `users.tema` = `enum('dark','light','system')` default `system`
-- Multi-dispositivo: al login se lee de BD y aplica
+Correo de pruebas/dev: `developer@autosmotosymas.mx`
 
 ---
 
 ## Jobs de background (queue)
 
 ```
-NotificarCambioPrecio    → cuando agencia guarda nuevo precio
-NotificarCambioStatus    → cuando cambia status del vehículo
+NotificarCambioPrecio    → cuando agencia guarda nuevo precio más bajo
+NotificarCambioStatus    → cuando cambia status del vehículo (apartado/vendido)
 NotificarNuevoLead       → nuevo mensaje de comprador → agencia
-NotificarSuscripcionVence → cron diario 9am
+NotificarSuscripcionVence → cron diario 9am CDMX — avisa 7, 3 y 1 día antes
 ```
 
 ---
 
-## PWA (pendiente de implementar)
+## PWA — Captura móvil
 
-- `public/pwa/manifest.json` — nombre, colores, iconos
-- `public/pwa/sw.js` — Service Worker con Workbox
-- `public/img/icons/` — iconos 192px y 512px del logo
-- Color tema: `#E8710A` / Fondo: `#111111`
-- Display: `standalone`
-
----
-
-## Estado actual del proyecto
-
-### ✅ Completado
-- Instalación Laravel 13 + todos los paquetes
-- 18 migraciones corridas y verificadas
-- Estructura de controllers, models, middleware, jobs, requests creada
-- Seeders: `PlanesSeeder` con Básico y Premium cargados
-- Tailwind v3 configurado con paleta de marca
-- `app.css` con clases utilitarias del proyecto
-
-### 🔄 Siguiente paso inmediato
-**Crear `resources/views/layouts/app.blade.php`** — el layout principal con:
-1. Script anti-flash dark mode en `<head>`
-2. Navbar con logo, links, toggle dark/light, botón "Mi cuenta"
-3. Slot de contenido con `.container-amm` (max 1280px)
-4. Footer
-5. Stack Alpine.js y Vite assets
-
-### ⏳ Pendiente (en orden)
-1. Layout principal Blade + componentes base
-2. Middleware `CheckRol` y `AplicarTema`
-3. Cara pública: Home, Búsqueda, Ficha vehículo
-4. Auth: Login, Registro, Perfil del comprador
-5. Portal agencia: Dashboard, CRUD inventario, Leads
-6. App captura móvil (PWA)
-7. Panel admin
-8. PWA: manifest + service worker
-9. Integración Conekta
+- `public/pwa/manifest.json` — scope `/captura`, display standalone
+- `public/pwa/sw.js` — Cache-first assets, Network-first páginas
+- `public/img/icons/` — 8 tamaños generados con GD (fondo naranja #E8710A)
+- Comando para regenerar iconos: `php artisan pwa:icons`
+- SW registrado en `resources/js/app.js`
 
 ---
 
-## Path del proyecto
+## CSS — clases utilitarias (app.css)
+
+```css
+.container-amm   /* max-w-[1280px] mx-auto px-4 */
+.section-py      /* py-[120px] */
+.bg-page         /* bg-gray-50 dark:bg-[#111111] */
+.bg-card         /* bg-white dark:bg-[#1a1a1a] */
+.bg-card2        /* bg-gray-100 dark:bg-[#242424] */
+.border-base     /* border-gray-200 dark:border-[#2e2e2e] */
+.text-base       /* text-gray-900 dark:text-[#f0f0f0] */
+.text-muted      /* text-gray-500 dark:text-[#888888] */
+.btn-primary     /* naranja, text-base, px-6 py-3 rounded-xl */
+.btn-outline     /* transparente con borde, text-base */
+.btn-ghost       /* sin borde, hover sutil */
+.input-amm       /* input para paneles (adapta dark/light) */
+.input-amm-dark  /* input para auth (siempre dark) */
+.label-amm       /* label para paneles */
+.label-amm-dark  /* label para auth */
+.badge-cert      /* verde — certificado */
+.badge-nocert    /* ámbar — sin certificar */
+.badge-apt       /* azul — apartado */
+.badge-sold      /* rojo — vendido */
+```
+
+---
+
+## Imágenes del sitio
+
+```
+public/img/
+├── logo_amm.png              ← Logo oficial (200px en navbar/footer)
+└── banners/
+    ├── banner01.jpg           ← Hero slider slide 1
+    ├── banner02.jpg           ← Hero slider slide 2
+    ← banner03.jpg           ← Hero slider slide 3
+    └── agencia.jpg            ← Fondo parallax sección CTA agencias
+```
+
+---
+
+## Estructura de layouts
+
+```
+resources/views/layouts/
+├── app.blade.php      ← Público (navbar + footer, dark mode, 1280px)
+├── guest.blade.php    ← Auth (split: branding izq | form der, full-width bg)
+├── agencia.blade.php  ← Panel agencia (sidebar + topbar, max-w-[1280px])
+├── admin.blade.php    ← Panel admin (sidebar + topbar, max-w-[1280px])
+└── captura.blade.php  ← PWA captura móvil
+```
+
+---
+
+## Repositorio GitHub
+
+- URL: `https://github.com/autosmotosymas/am-`
+- Branch principal: `main`
+- Push con PAT (Personal Access Token) — no usar cuenta ideasreward2018
+
+---
+
+## Servidor / Deploy
+
+### Hosting compartido (autosmotosymas.com.mx:2083)
+- cPanel con PHP 8.2 disponible
+- **SIN SSH ni Terminal** — NO viable para Laravel
+- Usar solo para gestionar el correo (SMTP en mco10.prodns.mx)
+
+### VPS DigitalOcean — **ACTIVO**
+- IP: `159.89.239.220`
+- OS: Ubuntu 24.04 LTS
+- Usuario: `root`
+- Stack instalado: Nginx 1.24 + PHP 8.4-FPM + MySQL 8.0 + Composer 2 + Node 20 + Certbot
+- App en: `/var/www/amm`
+- DB: `amm_db` / usuario: `amm_user` / password: `AmmDB@Prod2025!`
+- Queue worker: servicio systemd `amm-queue.service` (activo)
+- Scheduler: cron `* * * * *` corriendo `php8.4 artisan schedule:run`
+- Certbot: certificado Let's Encrypt instalado, auto-renovación activa
+- Cloudflare API token para renovación DNS: guardado en `/root/.secrets/cloudflare.ini`
+
+### DNS — Cloudflare
+- Dominio: `autosmotosymas.mx`
+- A record: `autosmotosymas.mx` → `159.89.239.220` (Proxied)
+- CNAME: `www` → `autosmotosymas.mx` (Proxied)
+- SSL/TLS mode: Full (strict)
+- Certificado Let's Encrypt válido hasta 2026-08-20
+
+---
+
+## Path del proyecto local
+
 `/Users/alejandrolira/Sites/amm`
 
 ## Comandos útiles
+
 ```bash
-php artisan serve          # servidor local
-npm run dev                # Vite en watch mode
-php artisan migrate:status # ver estado de tablas
-php artisan queue:work     # procesar jobs
-php artisan db:seed        # correr seeders
+php artisan serve              # servidor local puerto 8000
+npm run dev                    # Vite en watch mode
+php artisan migrate:status     # ver estado de tablas
+php artisan queue:work         # procesar jobs
+php artisan db:seed            # correr seeders
+php artisan stripe:sync-plans  # sincronizar precios con Stripe
+php artisan pwa:icons          # regenerar iconos PWA
+lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
+```
+
+---
+
+## URL de producción
+
+**https://autosmotosymas.mx** — LIVE con SSL ✅
+
+---
+
+## ✅ Estado actual — LO QUE ESTÁ HECHO
+
+### Backend
+- [x] Laravel 13 + todos los paquetes instalados
+- [x] 18 migraciones + migración Stripe columns corridas
+- [x] Todos los modelos con relaciones y traits (HasSlug, etc.)
+- [x] Seeders: PlanesSeeder con Básico y Premium
+- [x] Spatie roles y permisos configurados (4 roles)
+- [x] Stripe: StripeService, WebhookController, SuscripcionController
+- [x] Stripe planes sincronizados con price IDs en BD
+- [x] Jobs de notificación: CambioPrecio, CambioStatus, NuevoLead, SuscripcionVence
+- [x] Scheduler configurado (daily 9am CDMX)
+- [x] Mail SMTP configurado y probado
+- [x] PWA: manifest.json, sw.js, iconos generados
+
+### Frontend — Vistas públicas
+- [x] Home: hero slider infinito (3 banners + clon), secciones 120px padding, CTA agencias con parallax y overlay
+- [x] Búsqueda: filtros sidebar (móvil drawer + desktop), chips filtros activos, ordenamiento, paginación
+- [x] Ficha de vehículo: galería con thumbnails, especificaciones, certificación, formulario lead, agencia card, relacionados
+- [x] Perfil de agencia pública: header con contacto, inventario en grid
+
+### Frontend — Auth
+- [x] Login, Register, Forgot Password, Reset Password, Verify Email, Confirm Password — todos en estilo AMM (split layout)
+
+### Frontend — Paneles
+- [x] Layout agencia: sidebar con nav, topbar, dark mode toggle
+- [x] Layout admin: sidebar con nav, topbar
+- [x] Agencia: dashboard, inventario CRUD, leads, estadísticas, suscripción, éxito pago
+- [x] Admin: dashboard, agencias (index/show/create), verificadores (index/show/form), certificaciones (index/create/edit), suscripciones (index/create/edit)
+- [x] Captura PWA: index y nuevo vehículo
+- [x] Perfil del comprador
+
+### Frontend — Componentes
+- [x] `tarjeta-vehiculo` — card de vehículo reutilizable
+- [x] `paginacion` — paginación estilizada
+- [x] `chip-filtro` — chips de filtros activos con X para quitar
+- [x] `_agencia-card` — card de agencia en ficha de vehículo
+
+### Sistema de diseño
+- [x] Tailwind con paleta de marca (#E8710A + #111111)
+- [x] Dark/light mode completo con anti-flash script
+- [x] Todos los textos en text-base (jerarquía consistente)
+- [x] Todos los layouts limitados a 1280px
+- [x] Clases utilitarias: section-py, input-amm, label-amm, btn-*, badges
+
+---
+
+## ⏳ PENDIENTE — En orden de prioridad
+
+### 1. Sandbox / pruebas — EN PROGRESO
+- [x] Servidor VPS DigitalOcean activo con stack completo
+- [x] Dominio autosmotosymas.mx apuntando al VPS con SSL
+- [x] Stripe en modo TEST con claves completas en .env del servidor
+- [ ] Registrar webhook en Stripe Dashboard (modo test): `https://autosmotosymas.mx/stripe/webhook`
+- [ ] Pegar `STRIPE_WEBHOOK_SECRET` en .env del servidor
+- [ ] Crear usuario admin en producción
+- [ ] Crear agencia de prueba y suscribirse con tarjeta demo de Stripe
+- [ ] Agregar `MAIL_PASSWORD` en .env del servidor
+
+### 2. Stripe — pasar a LIVE (post-pruebas)
+- [ ] Cambiar a claves LIVE de Stripe (reemplazar pk_test / sk_test)
+- [ ] Registrar webhook LIVE: `https://autosmotosymas.mx/stripe/webhook`
+- [ ] Copiar `STRIPE_WEBHOOK_SECRET` LIVE al .env del servidor
+- [ ] Sincronizar planes en producción: `php artisan stripe:sync-plans`
+
+### 3. Contenido inicial
+- [ ] Dar de alta agencias reales
+- [ ] Capturar inventario inicial de vehículos
+
+### 4. Funcionalidad adicional (post-MVP)
+- [ ] Seguimientos de vehículos (tabla `seguimientos` existe, falta UI y lógica)
+- [ ] Notificaciones push PWA (tabla existe, falta implementación)
+- [ ] Categorías por marca y tipo (rutas SEO: `/autos/marca/{marca}`)
+- [ ] Páginas legales: aviso de privacidad, términos y condiciones
+- [ ] Integración WhatsApp directo (botón wa.me con mensaje pre-armado)
+
+---
+
+## 🔧 Configuración .env clave
+
+### Local
+```env
+APP_ENV=local
+APP_URL=http://127.0.0.1:8000
+DB_DATABASE=amm_db
+QUEUE_CONNECTION=database
+STRIPE_KEY=pk_test_51GqLY5L42wZLmAlakJALM3E3x...
+STRIPE_SECRET=sk_test_51GqLY5L42wZLmAlaEUE9D7l5...
+STRIPE_WEBHOOK_SECRET=           ← usar Stripe CLI para test local
+MAIL_MAILER=smtp
+MAIL_SCHEME=smtps
+MAIL_HOST=mco10.prodns.mx
+MAIL_PORT=465
+```
+
+### Servidor (VPS 159.89.239.220)
+```env
+APP_ENV=production
+APP_URL=https://autosmotosymas.mx
+DB_DATABASE=amm_db
+DB_USERNAME=amm_user
+DB_PASSWORD=AmmDB@Prod2025!
+QUEUE_CONNECTION=database
+STRIPE_KEY=pk_test_51GqLY5L42wZLmAlakJALM3E3x...  ← cambiar a LIVE
+STRIPE_SECRET=sk_test_51GqLY5L42wZLmAlaEUE9D7l5... ← cambiar a LIVE
+STRIPE_WEBHOOK_SECRET=           ← PENDIENTE webhook test
+MAIL_MAILER=smtp
+MAIL_SCHEME=smtps
+MAIL_HOST=mco10.prodns.mx
+MAIL_PORT=465
+MAIL_PASSWORD=                   ← PENDIENTE
+```
+
+### Comandos en servidor
+```bash
+# Conectar al servidor
+ssh root@159.89.239.220
+
+# Editar .env
+nano /var/www/amm/.env && cd /var/www/amm && php8.4 artisan config:cache
+
+# Ver logs
+tail -f /var/www/amm/storage/logs/laravel.log
+
+# Estado del queue worker
+systemctl status amm-queue
+
+# Deploy de cambios desde git
+cd /var/www/amm && git pull && php8.4 artisan migrate --force && php8.4 artisan config:cache && php8.4 artisan route:cache && php8.4 artisan view:cache && npm run build && systemctl restart amm-queue
 ```

@@ -8,30 +8,30 @@
         @if($editando) @method('PUT') @endif
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Nombre *</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Nombre *</label>
             <input type="text" name="nombre" value="{{ old('nombre', $verificador->nombre ?? '') }}" required
-                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('nombre') border-red-500/60 @enderror">
+                   class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('nombre') border-red-500/60 @enderror">
             @error('nombre') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Email *</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Email *</label>
             <input type="email" name="email" value="{{ old('email', $verificador->email ?? '') }}" required
-                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('email') border-red-500/60 @enderror">
+                   class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('email') border-red-500/60 @enderror">
             @error('email') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Teléfono</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Teléfono</label>
             <input type="tel" name="telefono" value="{{ old('telefono', $verificador->telefono ?? '') }}"
-                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                   class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-base mb-1.5">Zona de operación</label>
+            <label class="block text-sm font-semibold text-base mb-1.5">Zona de operación</label>
             <input type="text" name="zona" value="{{ old('zona', $verificador->zona ?? '') }}"
                    placeholder="Ej. Zapopan, Tlaquepaque"
-                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
+                   class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors">
         </div>
 
         @if($editando)

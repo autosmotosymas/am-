@@ -7,6 +7,27 @@
   .container-amm {
     @apply max-w-container mx-auto px-4 sm:px-6;
   }
+  .section-py {
+    @apply py-[120px];
+  }
+
+  /* Inputs y labels reutilizables */
+  .input-amm {
+    @apply w-full bg-card2 border border-base rounded-xl px-4 py-3
+           text-base placeholder-gray-400 dark:placeholder-gray-600
+           focus:outline-none focus:border-brand-orange transition-colors;
+  }
+  .input-amm-dark {
+    @apply w-full bg-white/5 border border-white/10 text-white placeholder-gray-600
+           rounded-xl px-4 py-3 text-base
+           focus:outline-none focus:border-brand-orange focus:bg-white/[0.08] transition-colors;
+  }
+  .label-amm {
+    @apply block text-sm font-semibold text-base mb-1.5;
+  }
+  .label-amm-dark {
+    @apply block text-sm font-semibold text-gray-300 mb-1.5;
+  }
 
   /* Dark mode base */
   .bg-page        { @apply bg-gray-50      dark:bg-[#111111]; }
@@ -26,8 +47,8 @@
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            bg-brand-orange hover:bg-brand-orange2
-           text-white font-medium text-sm
-           px-5 py-2.5 rounded-lg
+           text-white font-semibold text-base
+           px-6 py-3 rounded-xl
            transition-colors duration-150;
   }
   .btn-outline {
@@ -35,15 +56,15 @@
            bg-transparent hover:bg-gray-100 dark:hover:bg-[#242424]
            text-gray-700 dark:text-[#f0f0f0]
            border border-gray-300 dark:border-[#2e2e2e]
-           font-medium text-sm
-           px-5 py-2.5 rounded-lg
+           font-semibold text-base
+           px-6 py-3 rounded-xl
            transition-colors duration-150;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
            bg-transparent hover:bg-gray-100 dark:hover:bg-[#242424]
-           text-gray-500 dark:text-[#888888]
-           font-medium text-sm px-3 py-2 rounded-lg
+           text-gray-600 dark:text-[#aaaaaa]
+           font-medium text-base px-4 py-2.5 rounded-xl
            transition-colors duration-150;
   }
 }

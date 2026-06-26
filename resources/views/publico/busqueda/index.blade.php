@@ -17,7 +17,7 @@
                     Buscar autos seminuevos
                 @endif
             </h1>
-            <p class="text-sm text-muted mt-1">
+            <p class="text-base text-muted mt-1">
                 {{ number_format($vehiculos->total()) }} {{ Str::plural('vehículo', $vehiculos->total()) }} encontrado{{ $vehiculos->total() !== 1 ? 's' : '' }}
             </p>
         </div>
@@ -62,17 +62,17 @@
 
                         {{-- Búsqueda texto --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Buscar</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Buscar</label>
                             <input type="text" name="q" value="{{ request('q') }}"
                                    placeholder="Marca, modelo, año…"
-                                   class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500">
+                                   class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-500">
                         </div>
 
                         {{-- Marca --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Marca</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Marca</label>
                             <select name="marca"
-                                    class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                    class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
                                 <option value="">Todas las marcas</option>
                                 @foreach($marcas as $m)
                                     <option value="{{ $m }}" {{ request('marca') === $m ? 'selected' : '' }}>
@@ -84,9 +84,9 @@
 
                         {{-- Tipo --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Tipo</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Tipo</label>
                             <select name="tipo"
-                                    class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                    class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
                                 <option value="">Todos los tipos</option>
                                 @foreach(['auto' => 'Auto', 'moto' => 'Moto', 'camioneta' => 'Camioneta', 'camion' => 'Camión', 'otro' => 'Otro'] as $val => $label)
                                     <option value="{{ $val }}" {{ request('tipo') === $val ? 'selected' : '' }}>
@@ -98,30 +98,30 @@
 
                         {{-- Transmisión --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Transmisión</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Transmisión</label>
                             <div class="flex flex-wrap gap-2">
                                 @foreach(['manual' => 'Manual', 'automatica' => 'Automática', 'cvt' => 'CVT'] as $val => $label)
                                     <label class="flex items-center gap-1.5 cursor-pointer">
                                         <input type="radio" name="transmision" value="{{ $val }}"
                                                {{ request('transmision') === $val ? 'checked' : '' }}
                                                class="accent-brand-orange">
-                                        <span class="text-sm text-base">{{ $label }}</span>
+                                        <span class="text-base text-base">{{ $label }}</span>
                                     </label>
                                 @endforeach
                                 <label class="flex items-center gap-1.5 cursor-pointer">
                                     <input type="radio" name="transmision" value=""
                                            {{ !request('transmision') ? 'checked' : '' }}
                                            class="accent-brand-orange">
-                                    <span class="text-sm text-muted">Todas</span>
+                                    <span class="text-base text-muted">Todas</span>
                                 </label>
                             </div>
                         </div>
 
                         {{-- Combustible --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Combustible</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Combustible</label>
                             <select name="combustible"
-                                    class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                    class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
                                 <option value="">Todos</option>
                                 @foreach(['gasolina' => 'Gasolina', 'diesel' => 'Diésel', 'electrico' => 'Eléctrico', 'hibrido' => 'Híbrido', 'gas' => 'Gas'] as $val => $label)
                                     <option value="{{ $val }}" {{ request('combustible') === $val ? 'selected' : '' }}>
@@ -133,31 +133,31 @@
 
                         {{-- Año --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Año</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Año</label>
                             <div class="flex gap-2 items-center">
                                 <input type="number" name="anio_min" value="{{ request('anio_min') }}"
                                        min="{{ $anioMin }}" max="{{ $anioMax }}"
                                        placeholder="{{ $anioMin }}"
-                                       class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
-                                <span class="text-muted text-sm">–</span>
+                                       class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                <span class="text-muted text-base">–</span>
                                 <input type="number" name="anio_max" value="{{ request('anio_max') }}"
                                        min="{{ $anioMin }}" max="{{ $anioMax }}"
                                        placeholder="{{ $anioMax }}"
-                                       class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                       class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
                             </div>
                         </div>
 
                         {{-- Precio --}}
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Precio (MXN)</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Precio (MXN)</label>
                             <div class="flex gap-2 items-center">
                                 <input type="number" name="precio_min" value="{{ request('precio_min') }}"
                                        step="5000" placeholder="Mínimo"
-                                       class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
-                                <span class="text-muted text-sm">–</span>
+                                       class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                <span class="text-muted text-base">–</span>
                                 <input type="number" name="precio_max" value="{{ request('precio_max') }}"
                                        step="5000" placeholder="Máximo"
-                                       class="w-full bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                                       class="w-full bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
                             </div>
                         </div>
 
@@ -227,7 +227,7 @@
                     {{-- Ordenamiento --}}
                     <select name="orden" form="form-filtros"
                             onchange="document.getElementById('form-filtros').submit()"
-                            class="bg-card border border-base text-base text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors shrink-0">
+                            class="bg-card border border-base text-base rounded-lg px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors shrink-0">
                         <option value="reciente"   {{ request('orden','reciente') === 'reciente'   ? 'selected' : '' }}>Más recientes</option>
                         <option value="precio_asc" {{ request('orden') === 'precio_asc'  ? 'selected' : '' }}>Precio: menor a mayor</option>
                         <option value="precio_desc"{{ request('orden') === 'precio_desc' ? 'selected' : '' }}>Precio: mayor a menor</option>

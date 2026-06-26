@@ -60,7 +60,7 @@
                     <h3 class="font-semibold text-base">Vehículos recientes</h3>
                 </div>
                 @if($agencia->vehiculos->isEmpty())
-                    <p class="text-sm text-muted text-center py-8">Sin vehículos.</p>
+                    <p class="text-base text-muted text-center py-8">Sin vehículos.</p>
                 @else
                     <div class="divide-y divide-base">
                         @foreach($agencia->vehiculos as $v)
@@ -93,7 +93,7 @@
                     <p class="text-lg font-black text-green-400">{{ $sus->plan?->nombre }}</p>
                     <p class="text-xs text-muted mt-1">Vence: {{ $sus->fecha_vencimiento->format('d/m/Y') }}</p>
                 @else
-                    <p class="text-sm text-red-400">Sin suscripción activa</p>
+                    <p class="text-base text-red-400">Sin suscripción activa</p>
                 @endif
 
                 {{-- Activar manual --}}
@@ -101,14 +101,14 @@
                       class="mt-4 pt-4 border-t border-base space-y-3">
                     @csrf
                     <select name="plan_id"
-                            class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange">
+                            class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange">
                         @foreach($planes as $plan)
                             <option value="{{ $plan->id }}">{{ $plan->nombre }} — {{ $plan->precio_formateado }}/mes</option>
                         @endforeach
                     </select>
                     <div class="flex gap-2">
                         <input type="number" name="meses" value="1" min="1" max="24"
-                               class="w-20 bg-card2 border border-base text-base text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange">
+                               class="w-20 bg-card2 border border-base text-base rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange">
                         <span class="text-sm text-muted self-center">mes(es)</span>
                     </div>
                     <button type="submit" class="btn-primary w-full justify-center text-sm">
@@ -121,7 +121,7 @@
             @if($agencia->suscripciones->isNotEmpty())
                 <div class="bg-card border border-base rounded-2xl overflow-hidden">
                     <div class="px-5 py-3 border-b border-base">
-                        <h3 class="font-semibold text-base text-sm">Historial</h3>
+                        <h3 class="font-semibold text-base">Historial</h3>
                     </div>
                     <div class="divide-y divide-base">
                         @foreach($agencia->suscripciones->take(5) as $sus)

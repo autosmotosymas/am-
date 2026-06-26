@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,7 +17,7 @@ class Agencia extends Model
     protected $fillable = [
         'nombre', 'slug', 'email', 'telefono', 'whatsapp', 'direccion',
         'ciudad', 'estado', 'cp', 'logo', 'banner', 'descripcion',
-        'calificacion', 'total_resenas', 'activo', 'verificada',
+        'calificacion', 'total_resenas', 'activo', 'verificada', 'vendedor_id',
     ];
 
     protected $casts = [
@@ -38,6 +39,11 @@ class Agencia extends Model
     }
 
     // ── Relaciones ──────────────────────────────────────────────
+
+    public function vendedor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'vendedor_id');
+    }
 
     public function usuarios(): BelongsToMany
     {

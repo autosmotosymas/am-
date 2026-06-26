@@ -77,7 +77,7 @@
             </div>
         @empty
             <div class="bg-card border border-base rounded-2xl text-center py-16">
-                <p class="text-sm text-muted">Sin certificaciones en esta categoría.</p>
+                <p class="text-base text-muted">Sin certificaciones en esta categoría.</p>
             </div>
         @endforelse
     </div>

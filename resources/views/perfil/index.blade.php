@@ -10,7 +10,7 @@
                  class="w-16 h-16 rounded-2xl object-cover border-2 border-brand-orange/30">
             <div>
                 <h1 class="text-xl font-bold text-base">{{ $user->name }}</h1>
-                <p class="text-sm text-muted">{{ $user->email }}</p>
+                <p class="text-base text-muted">{{ $user->email }}</p>
                 <span class="inline-block mt-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange border border-brand-orange/20 capitalize">
                     {{ $user->getRoleNames()->first() ?? 'comprador' }}
                 </span>
@@ -18,7 +18,7 @@
         </div>
 
         @if(session('guardado'))
-            <div class="mb-6 bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-xl px-4 py-3">
+            <div class="mb-6 bg-green-500/10 border border-green-500/30 text-green-400 text-base rounded-xl px-4 py-3">
                 Perfil actualizado correctamente.
             </div>
         @endif
@@ -37,23 +37,23 @@
                         @method('PUT')
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Nombre</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Nombre</label>
                             <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('name') border-red-500/60 @enderror">
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('name') border-red-500/60 @enderror">
                             @error('name') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Teléfono</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Teléfono</label>
                             <input type="tel" name="telefono" value="{{ old('telefono', $user->telefono) }}"
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                    placeholder="33 1234 5678">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Correo electrónico</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Correo electrónico</label>
                             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('email') border-red-500/60 @enderror">
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('email') border-red-500/60 @enderror">
                             @error('email') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -83,25 +83,25 @@
                         <input type="hidden" name="email" value="{{ $user->email }}">
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Contraseña actual</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Contraseña actual</label>
                             <input type="password" name="password_actual" required
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('password_actual') border-red-500/60 @enderror"
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('password_actual') border-red-500/60 @enderror"
                                    placeholder="••••••••">
                             @error('password_actual') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Nueva contraseña</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Nueva contraseña</label>
                             <input type="password" name="password" required
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('password') border-red-500/60 @enderror"
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('password') border-red-500/60 @enderror"
                                    placeholder="Mínimo 8 caracteres">
                             @error('password') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-base mb-1.5">Confirmar nueva contraseña</label>
+                            <label class="block text-sm font-semibold text-base mb-1.5">Confirmar nueva contraseña</label>
                             <input type="password" name="password_confirmation" required
-                                   class="w-full bg-card2 border border-base text-base text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
+                                   class="w-full bg-card2 border border-base text-base rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange transition-colors"
                                    placeholder="••••••••">
                         </div>
 
@@ -144,11 +144,11 @@
                     <h3 class="text-sm font-semibold text-base mb-3">Mi actividad</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-muted">Mensajes enviados</span>
+                            <span class="text-base text-muted">Mensajes enviados</span>
                             <span class="font-semibold text-base">{{ $user->leads->count() }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-muted">Miembro desde</span>
+                            <span class="text-base text-muted">Miembro desde</span>
                             <span class="font-semibold text-base">{{ $user->created_at->format('M Y') }}</span>
                         </div>
                     </div>

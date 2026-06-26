@@ -30,7 +30,7 @@
     <div x-show="sidebarOpen" @click="sidebarOpen = false"
          class="fixed inset-0 bg-black/60 z-30 lg:hidden"></div>
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden max-w-[1280px] mx-auto w-full">
 
         {{-- ══════════ SIDEBAR ══════════ --}}
         <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-base flex flex-col
@@ -83,7 +83,7 @@
 
                 @foreach($navItems as $item)
                     <a href="{{ route($item['route']) }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium transition-colors
                               {{ request()->routeIs($item['route'] . '*')
                                   ? 'bg-brand-orange/10 text-brand-orange'
                                   : 'text-muted hover:text-base hover:bg-card2' }}">
@@ -98,7 +98,7 @@
             {{-- Footer sidebar --}}
             <div class="border-t border-base p-4 space-y-1 shrink-0">
                 <a href="{{ route('home') }}"
-                   class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-muted hover:text-base hover:bg-card2 transition-colors">
+                   class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-muted hover:text-base hover:bg-card2 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
                     </svg>
@@ -107,7 +107,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400 hover:bg-red-500/5 transition-colors">
+                            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-red-400 hover:bg-red-500/5 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"/>
                         </svg>
@@ -129,7 +129,7 @@
                 </button>
 
                 <div class="flex-1 lg:flex-none">
-                    <h1 class="text-sm font-semibold text-base">{{ $title ?? 'Portal Agencia' }}</h1>
+                    <h1 class="text-base font-semibold text-base">{{ $title ?? 'Portal Agencia' }}</h1>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -162,7 +162,7 @@
 
             {{-- Alerta flash --}}
             @if(session('ok'))
-                <div class="mx-4 md:mx-6 mt-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-xl px-4 py-3">
+                <div class="mx-4 md:mx-6 mt-4 bg-green-500/10 border border-green-500/30 text-green-400 text-base rounded-xl px-4 py-3">
                     {{ session('ok') }}
                 </div>
             @endif

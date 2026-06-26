@@ -4,7 +4,7 @@
         <form method="GET" class="flex gap-2 flex-1 max-w-sm">
             <input type="text" name="q" value="{{ request('q') }}"
                    placeholder="Buscar agencia…"
-                   class="flex-1 bg-card border border-base text-base text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+                   class="flex-1 bg-card border border-base text-base rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
             <button type="submit" class="btn-outline px-4">Buscar</button>
         </form>
         <a href="{{ route('admin.agencias.create') }}" class="btn-primary">+ Nueva agencia</a>
@@ -66,7 +66,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-12 text-muted text-sm">Sin agencias registradas.</td>
+                        <td colspan="5" class="text-center py-12 text-muted text-base">Sin agencias registradas.</td>
                     </tr>
                 @endforelse
             </tbody>
