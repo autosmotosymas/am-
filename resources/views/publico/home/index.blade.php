@@ -5,30 +5,26 @@
          HERO
     ══════════════════════════════════════════════════ --}}
     <section class="relative bg-[#111111] overflow-hidden"
-             x-data="{
-                 current: 0,
-                 animating: true,
-                 init() {
-                     setInterval(() => {
-                         this.animating = true;
-                         this.current++;
-                         if (this.current === 3) {
-                             setTimeout(() => {
-                                 this.animating = false;
-                                 this.current = 0;
-                                 this.$nextTick(() => setTimeout(() => { this.animating = true; }, 50));
-                             }, 3000);
-                         }
-                     }, 7000);
-                 }
-             }">
+             style="min-height: clamp(480px, 70vh, 720px);"
+             x-data="{ idx: 0, going: false }"
+             x-init="
+                 $nextTick(() => {
+                     const track = $refs.track;
+                     track.addEventListener('transitionend', () => {
+                         if (idx === 3) { going = false; idx = 0; }
+                     });
+                     setInterval(() => { going = true; idx++; }, 5500);
+                 });
+             ">
 
         {{-- Slider: banner01, banner02, banner03, clon de banner01 — loop infinito --}}
         <div class="absolute inset-0">
-            <div class="flex h-full w-[400%]"
-                 :style="`transform: translateX(-${current * 25}%); transition: ${animating ? 'transform 3s cubic-bezier(0.77, 0, 0.175, 1)' : 'none'}`">
+            <div x-ref="track"
+                 class="flex h-full"
+                 style="width: 400%"
+                 :style="`transform: translateX(-${idx * 25}%); transition: ${going ? 'transform 1.1s cubic-bezier(0.77,0,0.175,1)' : 'none'}`">
                 @foreach(['banner01', 'banner02', 'banner03', 'banner01'] as $banner)
-                    <div class="w-1/4 h-full shrink-0">
+                    <div class="h-full" style="width: 25%; flex-shrink: 0;">
                         <img src="{{ asset('img/banners/' . $banner . '.jpg') }}"
                              alt=""
                              class="w-full h-full object-cover">
