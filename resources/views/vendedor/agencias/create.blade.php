@@ -25,6 +25,15 @@
                 @error('email') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Contraseña de acceso *</label>
+                <input type="text" name="password" value="{{ old('password') }}" required
+                       class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors font-mono placeholder-gray-600"
+                       placeholder="Mín. 8 caracteres" autocomplete="off">
+                <p class="text-[10px] text-gray-600 mt-1">El cliente usará este email y contraseña para entrar a su panel.</p>
+                @error('password') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
+            </div>
+
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Teléfono *</label>

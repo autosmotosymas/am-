@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Agencia;
 use App\Models\Plan;
 use App\Models\Suscripcion;
+use App\Models\User;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class AgenciaController extends Controller
@@ -34,7 +36,8 @@ class AgenciaController extends Controller
     {
         $data = $request->validate([
             'nombre'    => ['required', 'string', 'max:100'],
-            'email'     => ['required', 'email', 'unique:agencias,email'],
+            'email'     => ['required', 'email', 'unique:agencias,email', 'unique:users,email'],
+            'password'  => ['required', 'string', 'min:8'],
             'telefono'  => ['required', 'string', 'max:20'],
             'ciudad'    => ['required', 'string', 'max:60'],
             'estado'    => ['required', 'string', 'max:60'],
@@ -42,11 +45,27 @@ class AgenciaController extends Controller
             'direccion' => ['nullable', 'string', 'max:200'],
         ]);
 
-        $data['vendedor_id'] = auth()->id();
-        $data['activo']      = false;
-        $data['verificada']  = false;
+        $agencia = Agencia::create([
+            'nombre'     => $data['nombre'],
+            'email'      => $data['email'],
+            'telefono'   => $data['telefono'],
+            'ciudad'     => $data['ciudad'],
+            'estado'     => $data['estado'],
+            'whatsapp'   => $data['whatsapp'] ?? null,
+            'direccion'  => $data['direccion'] ?? null,
+            'vendedor_id'=> auth()->id(),
+            'activo'     => false,
+            'verificada' => false,
+        ]);
 
-        $agencia = Agencia::create($data);
+        // Crear usuario de acceso para la agencia
+        $usuario = User::create([
+            'name'       => $data['nombre'],
+            'email'      => $data['email'],
+            'password'   => Hash::make($data['password']),
+            'agencia_id' => $agencia->id,
+        ]);
+        $usuario->assignRole('agencia');
 
         return redirect()
             ->route('vendedor.agencias.show', $agencia)
@@ -68,12 +87,17 @@ class AgenciaController extends Controller
     {
         abort_unless($agencia->vendedor_id === auth()->id(), 403);
 
+        $usuario = $agencia->usuario;
+
         $data = $request->validate([
             'whatsapp'    => ['nullable', 'string', 'max:20'],
             'direccion'   => ['nullable', 'string', 'max:200'],
             'descripcion' => ['nullable', 'string', 'max:1000'],
             'logo'        => ['nullable', 'image', 'max:2048'],
             'banner'      => ['nullable', 'image', 'max:5120'],
+            'email'       => ['nullable', 'email', 'unique:agencias,email,' . $agencia->id,
+                              $usuario ? 'unique:users,email,' . $usuario->id : 'unique:users,email'],
+            'password'    => ['nullable', 'string', 'min:8'],
         ]);
 
         if ($request->hasFile('logo')) {
@@ -88,7 +112,30 @@ class AgenciaController extends Controller
             unset($data['banner']);
         }
 
-        $agencia->update($data);
+        // Actualizar datos de la agencia
+        $agencia->update(array_filter([
+            'whatsapp'    => $data['whatsapp'] ?? $agencia->whatsapp,
+            'direccion'   => $data['direccion'] ?? $agencia->direccion,
+            'descripcion' => $data['descripcion'] ?? $agencia->descripcion,
+            'logo'        => $data['logo'] ?? $agencia->logo,
+            'banner'      => $data['banner'] ?? $agencia->banner,
+            'email'       => filled($data['email'] ?? null) ? $data['email'] : $agencia->email,
+        ], fn($v) => $v !== null));
+
+        // Actualizar email y/o contraseña del usuario
+        if ($usuario) {
+            $userUpdate = [];
+            if (filled($data['email'] ?? null)) {
+                $userUpdate['email'] = $data['email'];
+                $userUpdate['name']  = $agencia->nombre;
+            }
+            if (filled($data['password'] ?? null)) {
+                $userUpdate['password'] = Hash::make($data['password']);
+            }
+            if ($userUpdate) {
+                $usuario->update($userUpdate);
+            }
+        }
 
         return back()->with('ok', 'Perfil actualizado.');
     }

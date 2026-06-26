@@ -185,6 +185,28 @@
                           placeholder="Años de experiencia, especialidad, servicios que ofrecen…">{{ old('descripcion', $agencia->descripcion) }}</textarea>
             </div>
 
+            {{-- Acceso del cliente --}}
+            <div class="border-t border-white/10 pt-4">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Acceso del cliente</p>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Email de acceso</label>
+                        <input type="email" name="email" value="{{ old('email', $agencia->email) }}"
+                               class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors placeholder-gray-600"
+                               placeholder="{{ $agencia->email }}">
+                        @error('email') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Nueva contraseña</label>
+                        <input type="text" name="password"
+                               class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-xl px-3 py-3 focus:outline-none focus:border-brand-orange transition-colors font-mono placeholder-gray-600"
+                               placeholder="Dejar vacío para no cambiar" autocomplete="new-password">
+                        @error('password') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+            </div>
+
             <button type="submit"
                     class="w-full bg-white/10 hover:bg-white/15 text-white font-semibold py-3 rounded-2xl text-sm transition-colors active:scale-95">
                 Guardar perfil

@@ -45,6 +45,11 @@ class Agencia extends Model
         return $this->belongsTo(User::class, 'vendedor_id');
     }
 
+    public function usuario(): HasOne
+    {
+        return $this->hasOne(User::class, 'agencia_id');
+    }
+
     public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'agencia_user');
