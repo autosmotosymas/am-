@@ -8,6 +8,7 @@ use App\Models\Plan;
 use App\Models\Suscripcion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class SuscripcionController extends Controller
@@ -43,13 +44,13 @@ class SuscripcionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'agencia_id'        => ['required', 'exists:agencias,id'],
-            'plan_id'           => ['required', 'exists:planes,id'],
-            'meses'             => ['required', 'integer', 'min:1', 'max:24'],
-            'precio_pagado'     => ['nullable', 'numeric', 'min:0'],
+            'agencia_id'    => ['required', 'exists:agencias,id'],
+            'plan_id'       => ['required', 'exists:planes,id'],
+            'precio_pagado' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         $agencia = Agencia::find($data['agencia_id']);
+        $plan    = Plan::find($data['plan_id']);
 
         // Cancelar activa previa
         $agencia->suscripciones()
@@ -61,7 +62,7 @@ class SuscripcionController extends Controller
             'plan_id'           => $data['plan_id'],
             'status'            => 'activa',
             'fecha_inicio'      => now(),
-            'fecha_vencimiento' => now()->addMonths($data['meses']),
+            'fecha_vencimiento' => now()->addMonths($plan->meses),
             'precio_pagado'     => $data['precio_pagado'] ?? 0,
         ]);
 
@@ -114,5 +115,29 @@ class SuscripcionController extends Controller
 
         return redirect()->route('admin.suscripciones.index')
             ->with('ok', 'Suscripción eliminada.');
+    }
+
+    public function export(): Response
+    {
+        $suscripciones = Suscripcion::with(['agencia', 'plan'])->latest()->get();
+
+        $csv = implode(',', ['ID', 'Agencia', 'Plan', 'Status', 'Precio pagado', 'Inicio', 'Vencimiento']) . "\n";
+
+        foreach ($suscripciones as $s) {
+            $csv .= implode(',', [
+                $s->id,
+                '"' . str_replace('"', '""', $s->agencia?->nombre ?? '') . '"',
+                '"' . ($s->plan?->nombre ?? '') . '"',
+                $s->status,
+                $s->precio_pagado,
+                $s->fecha_inicio?->format('d/m/Y') ?? '',
+                $s->fecha_vencimiento?->format('d/m/Y') ?? '',
+            ]) . "\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="suscripciones-' . date('Y-m-d') . '.csv"',
+        ]);
     }
 }

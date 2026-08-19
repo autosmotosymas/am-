@@ -21,7 +21,10 @@ class StripeSyncPlans extends Command
         }
 
         $stripe = new StripeClient($secret);
-        $planes = Plan::where('activo', true)->get();
+        $planes = Plan::where('activo', true)
+            ->orderByRaw("FIELD(nombre, 'Base', 'Medio', 'Premium')")
+            ->orderByRaw("FIELD(duracion, 'trimestral', 'semestral', 'anual')")
+            ->get();
 
         if ($planes->isEmpty()) {
             $this->warn('No hay planes activos. Ejecuta primero: php artisan db:seed --class=PlanesSeeder');
@@ -33,14 +36,14 @@ class StripeSyncPlans extends Command
 
         foreach ($planes as $plan) {
             if ($plan->stripe_price_id && ! $this->option('force')) {
-                $this->line("  → <comment>{$plan->nombre}</comment>: ya tiene Price ID ({$plan->stripe_price_id}), omitido.");
+                $this->line("  → <comment>{$plan->nombre} {$plan->duracion}</comment>: ya tiene Price ID ({$plan->stripe_price_id}), omitido.");
                 continue;
             }
 
             try {
-                // 1. Crear o recuperar el Product
+                // 1. Crear el Product en Stripe
                 $product = $stripe->products->create([
-                    'name'        => "AMM — {$plan->nombre}",
+                    'name'        => "AMM — {$plan->nombre} ({$plan->duracion_label})",
                     'description' => implode(', ', is_array($plan->features) ? array_slice($plan->features, 0, 3) : []),
                     'metadata'    => [
                         'plan_id'   => $plan->id,
@@ -48,31 +51,39 @@ class StripeSyncPlans extends Command
                     ],
                 ]);
 
-                // 2. Crear el Price recurrente mensual en MXN
+                // 2. Crear el Price recurrente según la duración del plan
+                [$interval, $intervalCount] = match ($plan->duracion) {
+                    'trimestral' => ['month', 3],
+                    'semestral'  => ['month', 6],
+                    'anual'      => ['year',  1],
+                };
+
                 $price = $stripe->prices->create([
-                    'product'    => $product->id,
-                    'currency'   => 'mxn',
-                    'unit_amount'=> (int) ($plan->precio_mensual * 100), // en centavos
-                    'recurring'  => [
-                        'interval'       => 'month',
-                        'interval_count' => 1,
+                    'product'      => $product->id,
+                    'currency'     => 'mxn',
+                    'unit_amount'  => (int) ($plan->precio * 100),
+                    'recurring'    => [
+                        'interval'       => $interval,
+                        'interval_count' => $intervalCount,
                     ],
-                    'nickname'   => "{$plan->nombre} — mensual",
-                    'metadata'   => [
+                    'nickname'     => "{$plan->nombre} — {$plan->duracion}",
+                    'metadata'     => [
                         'plan_id'   => $plan->id,
                         'plan_slug' => $plan->slug,
+                        'duracion'  => $plan->duracion,
+                        'meses'     => $plan->meses,
                     ],
                 ]);
 
                 // 3. Guardar en BD
                 $plan->update(['stripe_price_id' => $price->id]);
 
-                $this->line("  ✓ <info>{$plan->nombre}</info>");
+                $this->line("  ✓ <info>{$plan->nombre} — {$plan->duracion}</info>");
                 $this->line("      Product: {$product->id}");
-                $this->line("      Price:   {$price->id}  (MXN \${$plan->precio_mensual}/mes)");
+                $this->line("      Price:   {$price->id}  (MXN \${$plan->precio} / {$plan->duracion_label})");
 
             } catch (\Exception $e) {
-                $this->error("  ✗ {$plan->nombre}: " . $e->getMessage());
+                $this->error("  ✗ {$plan->nombre} {$plan->duracion}: " . $e->getMessage());
             }
 
             $this->newLine();

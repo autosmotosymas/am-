@@ -74,10 +74,10 @@ class StripeService
                 'quantity'   => 1,
                 'price_data' => [
                     'currency'     => 'mxn',
-                    'unit_amount'  => (int) ($plan->precio_mensual * 100),
+                    'unit_amount'  => (int) ($plan->precio * 100),
                     'product_data' => [
-                        'name'        => "AMM — {$plan->nombre}",
-                        'description' => "Suscripción mensual al plan {$plan->nombre} de AutosMotosYMás",
+                        'name'        => "AMM — {$plan->nombre} ({$plan->duracion_label})",
+                        'description' => "Suscripción {$plan->duracion} al plan {$plan->nombre} de AutosMotosYMás",
                     ],
                 ],
             ]];

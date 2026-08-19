@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerificarEmailNotification;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,6 +57,16 @@ class User extends Authenticatable
         return $this->avatar
             ? asset('storage/' . $this->avatar)
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=E8710A&color=fff&size=128';
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerificarEmailNotification);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     public function redirigirSegunRol(): string

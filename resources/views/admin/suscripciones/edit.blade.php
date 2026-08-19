@@ -16,10 +16,14 @@
             <label class="block text-sm font-semibold text-base mb-1.5">Plan *</label>
             <select name="plan_id" required
                     class="w-full bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors @error('plan_id') border-red-500/60 @enderror">
-                @foreach($planes as $plan)
-                    <option value="{{ $plan->id }}" {{ old('plan_id', $sus->plan_id) == $plan->id ? 'selected' : '' }}>
-                        {{ $plan->nombre }} — {{ $plan->precio_formateado }}/mes
-                    </option>
+                @foreach($planes->groupBy('nombre') as $nombre => $grupo)
+                    <optgroup label="{{ $nombre }}">
+                        @foreach($grupo as $plan)
+                            <option value="{{ $plan->id }}" {{ old('plan_id', $sus->plan_id) == $plan->id ? 'selected' : '' }}>
+                                {{ $plan->nombre }} {{ ucfirst($plan->duracion) }} — {{ $plan->precio_formateado }} ({{ $plan->duracion_label }})
+                            </option>
+                        @endforeach
+                    </optgroup>
                 @endforeach
             </select>
             @error('plan_id') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror

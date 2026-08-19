@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendedor;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AgenciaBienvenidaMail;
 use App\Models\Agencia;
 use App\Models\Plan;
 use App\Models\Suscripcion;
@@ -11,6 +12,7 @@ use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class AgenciaController extends Controller
@@ -67,6 +69,8 @@ class AgenciaController extends Controller
         ]);
         $usuario->assignRole('agencia');
 
+        Mail::to($agencia->email)->send(new AgenciaBienvenidaMail($agencia, $data['password']));
+
         return redirect()
             ->route('vendedor.agencias.show', $agencia)
             ->with('ok', "Agencia \"{$agencia->nombre}\" registrada. Completa el perfil y elige un plan.");
@@ -76,7 +80,7 @@ class AgenciaController extends Controller
     {
         abort_unless($agencia->vendedor_id === auth()->id(), 403);
 
-        $planes      = Plan::where('activo', true)->orderBy('precio_mensual')->get();
+        $planes      = Plan::where('activo', true)->orderBy('precio')->get();
         $suscripcion = $agencia->suscripcionActiva;
         $vehiculos   = $agencia->vehiculos()->count();
 
@@ -140,6 +144,7 @@ class AgenciaController extends Controller
                 'agencia_id' => $agencia->id,
             ]);
             $nuevo->assignRole('agencia');
+            Mail::to($email)->send(new AgenciaBienvenidaMail($agencia, $password));
         }
 
         return back()->with('ok', 'Perfil actualizado.');

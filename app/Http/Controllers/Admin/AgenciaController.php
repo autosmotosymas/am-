@@ -9,6 +9,7 @@ use App\Models\Suscripcion;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class AgenciaController extends Controller
@@ -50,13 +51,19 @@ class AgenciaController extends Controller
     public function update(Request $request, Agencia $agencia): RedirectResponse
     {
         $data = $request->validate([
-            'activo'     => ['boolean'],
-            'verificada' => ['boolean'],
+            'nombre'    => ['required', 'string', 'max:100'],
+            'email'     => ['required', 'email', 'unique:agencias,email,' . $agencia->id],
+            'telefono'  => ['required', 'string', 'max:20'],
+            'ciudad'    => ['required', 'string', 'max:60'],
+            'estado'    => ['required', 'string', 'max:60'],
+            'whatsapp'  => ['nullable', 'string', 'max:20'],
+            'direccion' => ['nullable', 'string', 'max:200'],
         ]);
 
         $agencia->update($data);
 
-        return back()->with('ok', 'Agencia actualizada.');
+        return redirect()->route('admin.agencias.show', $agencia)
+            ->with('ok', 'Agencia actualizada.');
     }
 
     // Activa/desactiva rápido desde la lista
@@ -134,5 +141,57 @@ class AgenciaController extends Controller
 
         return redirect()->route('admin.agencias.index')
             ->with('ok', 'Agencia eliminada.');
+    }
+
+    public function export(): Response
+    {
+        $agencias = Agencia::with('suscripcionActiva.plan')
+            ->withCount('vehiculos')
+            ->latest()
+            ->get();
+
+        $csv = implode(',', ['ID', 'Nombre', 'Email', 'Teléfono', 'Ciudad', 'Estado', 'Activa', 'Verificada', 'Vehículos', 'Plan', 'Registro']) . "\n";
+
+        foreach ($agencias as $ag) {
+            $csv .= implode(',', [
+                $ag->id,
+                '"' . str_replace('"', '""', $ag->nombre) . '"',
+                $ag->email,
+                $ag->telefono,
+                $ag->ciudad,
+                $ag->estado,
+                $ag->activo ? 'Sí' : 'No',
+                $ag->verificada ? 'Sí' : 'No',
+                $ag->vehiculos_count,
+                '"' . ($ag->suscripcionActiva?->plan?->nombre ?? 'Sin plan') . '"',
+                $ag->created_at->format('d/m/Y'),
+            ]) . "\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="agencias-' . date('Y-m-d') . '.csv"',
+        ]);
+    }
+
+    public function bulkAction(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'accion'  => ['required', 'in:activar,desactivar,verificar'],
+            'ids'     => ['required', 'array'],
+            'ids.*'   => ['integer', 'exists:agencias,id'],
+        ]);
+
+        $agencias = \App\Models\Agencia::whereIn('id', $request->ids)->get();
+
+        foreach ($agencias as $agencia) {
+            match ($request->accion) {
+                'activar'    => $agencia->update(['activo' => true]),
+                'desactivar' => $agencia->update(['activo' => false]),
+                'verificar'  => $agencia->update(['verificada' => true]),
+            };
+        }
+
+        return back()->with('ok', count($agencias) . ' agencias actualizadas.');
     }
 }

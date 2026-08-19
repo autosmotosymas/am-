@@ -61,7 +61,12 @@
                 <h3 class="font-semibold text-base mb-3">Suscripción</h3>
                 @if($agencia->suscripcionActiva)
                     @php $sus = $agencia->suscripcionActiva; $plan = $sus->plan; @endphp
-                    <p class="text-lg font-black text-brand-orange mb-1">{{ $plan?->nombre }}</p>
+                    <p class="text-lg font-black text-brand-orange mb-1">
+                        {{ $plan?->nombre }}
+                        @if($plan?->duracion_label)
+                            <span class="text-sm font-normal text-muted">{{ $plan->duracion_label }}</span>
+                        @endif
+                    </p>
                     <p class="text-xs text-muted">Vence: {{ $sus->fecha_vencimiento->format('d/m/Y') }}</p>
                     <div class="mt-3 space-y-1.5 text-xs text-muted">
                         <div class="flex justify-between">

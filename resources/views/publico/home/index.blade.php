@@ -60,10 +60,17 @@
 
                 {{-- Filtros rápidos --}}
                 <div class="flex flex-wrap gap-2 mt-4">
-                    @foreach(['SUV', 'Sedan', 'Pickup', 'Menos de $200k', 'Automático'] as $filtro)
-                        <a href="{{ route('busqueda', ['q' => $filtro]) }}"
+                    @foreach([
+                        'SUV'           => ['tipo'       => 'camioneta'],
+                        'Sedan'         => ['tipo'       => 'auto'],
+                        'Pickup'        => ['q'          => 'pickup'],
+                        'Menos de $200k'=> ['precio_max' => 200000],
+                        'Automático'    => ['transmision'=> 'automatica'],
+                        'Certificados'  => ['certificado'=> 1],
+                    ] as $label => $params)
+                        <a href="{{ route('busqueda', $params) }}"
                            class="text-sm text-white hover:text-brand-orange bg-black/20 hover:bg-black/90 border border-brand-orange/60 hover:border-brand-orange px-4 py-2 rounded-full transition-colors">
-                            {{ $filtro }}
+                            {{ $label }}
                         </a>
                     @endforeach
                 </div>

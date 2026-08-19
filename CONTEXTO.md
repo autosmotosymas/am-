@@ -94,14 +94,32 @@ borrador → publicado → [inspeccion_agendada] → certificado
 
 ## Tiers de suscripción
 
-| Feature | Básico $599/mes | Premium $1,299/mes |
-|---------|-----------------|-------------------|
-| Vehículos activos | 20 | 60 |
-| Fotos por vehículo | 8 | 30 |
-| Certificaciones incluidas | ✗ | 3/mes |
-| Vehículos destacados | 0 | 5 |
-| Badge agencia premium | ✗ | ✓ |
-| Estadísticas avanzadas | ✗ | ✓ |
+**3 paquetes × 3 duraciones = 9 planes con stripe_price_id individual**
+
+| Feature | Base | Medio | Premium |
+|---------|------|-------|---------|
+| Vehículos activos | 15 | 30 | 60 |
+| Fotos por vehículo | 15 | 20 | 30 |
+| Anuncios destacados | 5 | 10 | 20 |
+| Videos por anuncio | 5 | 10 | 20 |
+| Banner de certificado | ✓ | ✓ | ✓ |
+| Estadísticas avanzadas | ✗ | ✓ | ✓ |
+| Soporte prioritario | ✗ | ✗ | ✓ |
+
+**Precios (precio total del período):**
+
+| Paquete | Trimestral (3m) | Semestral (6m) | Anual (12m) |
+|---------|----------------|----------------|-------------|
+| Base | $5,500 | $10,000 | $18,000 |
+| Medio | $7,650 | $14,040 | $25,200 |
+| Premium | $9,000 | $19,800 | $32,400 |
+
+**Slugs de los planes:** `base-trimestral`, `base-semestral`, `base-anual`, `medio-trimestral`, `medio-semestral`, `medio-anual`, `premium-trimestral`, `premium-semestral`, `premium-anual`
+
+**Stripe interval:**
+- trimestral → `interval: month, interval_count: 3`
+- semestral → `interval: month, interval_count: 6`
+- anual → `interval: year, interval_count: 1`
 
 ---
 
@@ -111,9 +129,9 @@ borrador → publicado → [inspeccion_agendada] → certificado
 - `STRIPE_KEY` = pk_test_51GqLY5L42wZLmAlakJALM3E3x... (completa en .env del servidor)
 - `STRIPE_SECRET` = sk_test_51GqLY5L42wZLmAlaEUE9D7l5... (completa en .env del servidor)
 - `STRIPE_WEBHOOK_SECRET` = **PENDIENTE** — configurar webhook en Stripe Dashboard test mode → `https://autosmotosymas.mx/stripe/webhook`
-- Plan Básico synced → `price_1TWkfNL42wZLmAlaKwwto21x`
-- Plan Premium synced → `price_1TWkfNL42wZLmAlaHYYW6iru`
+- 9 planes pendientes de sincronizar con Stripe (anteriores IDs son de la estructura vieja)
 - Comando para sincronizar: `php artisan stripe:sync-plans`
+- Stripe prices son recurrentes con interval_count según duración (ver sección Tiers)
 - Webhooks a registrar: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`, `customer.subscription.updated`
 
 ---
@@ -201,7 +219,7 @@ resources/views/layouts/
 ├── app.blade.php      ← Público (navbar + footer, dark mode, 1280px)
 ├── guest.blade.php    ← Auth (split: branding izq | form der, full-width bg)
 ├── agencia.blade.php  ← Panel agencia (sidebar + topbar, max-w-[1280px])
-├── admin.blade.php    ← Panel admin (sidebar + topbar, max-w-[1280px])
+├── admin.blade.php    ← Panel admin (sidebar + topbar, full width — sin max-w)
 ├── captura.blade.php  ← PWA captura móvil
 └── vendedor.blade.php ← PWA vendedor móvil (mismo patrón que captura, max-w-lg centrado)
 ```
@@ -285,7 +303,7 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 - [x] PWA: manifest.json, sw.js, iconos generados
 
 ### Frontend — Vistas públicas
-- [x] Home: hero slider infinito (3 banners + clon), secciones 120px padding, CTA agencias con parallax y overlay
+- [x] Home: hero slider crossfade (opacity, 3 banners apilados con Alpine), secciones 120px padding, CTA agencias con parallax y overlay, sección de contacto (#contacto) con form que envía a developer@autosmotosymas.mx
 - [x] Búsqueda: filtros sidebar (móvil drawer + desktop), chips filtros activos, ordenamiento, paginación
 - [x] Ficha de vehículo: galería con thumbnails, especificaciones, certificación, formulario lead, agencia card, relacionados
 - [x] Perfil de agencia pública: header con contacto, inventario en grid
@@ -302,7 +320,7 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 - [x] Perfil del comprador
 
 ### Frontend — Paneles vendedor (NUEVO — jun 2026)
-- [x] Layout vendedor: PWA móvil, bottom nav, back button, header action slot
+- [x] Layout vendedor: PWA móvil, bottom nav (Dashboard | Nueva agencia | Perfil), back button, header action slot
 - [x] Dashboard vendedor: lista de agencias propias
 - [x] Alta de agencia: crea Agencia + User (rol agencia) en un solo form con email/password
 - [x] Show/edit agencia: status, stats, planes Stripe, editar perfil (logo/banner/desc), cambiar acceso (email/password del cliente)
@@ -310,7 +328,8 @@ lsof -ti:8000 | xargs kill     # matar proceso en puerto 8000
 - [x] Alta de vehículo: form completo con catálogo marca/modelo (config/catalogo.php) + Alpine.js selectores en cascada
 - [x] Editar vehículo: form pre-llenado, con tarjeta de acceso a gestión de fotos
 - [x] Gestión de fotos vendedor: drag-and-drop SortableJS (vanilla JS), agregar, eliminar, principal
-- [x] Admin: panel de vendedores (index/create/store/show/destroy)
+- [x] Perfil nativo del vendedor: `/vendedor/perfil` — nombre, correo, tel, contraseña + logout dentro del layout móvil
+- [x] Admin: panel de vendedores con edición completa (nombre/correo/tel/contraseña) desde show
 
 ### Frontend — Paneles agencia (mejoras jun 2026)
 - [x] Gestión de fotos por vehículo: drag-and-drop SortableJS, botón 📷 en inventario
@@ -431,5 +450,9 @@ cd /var/www/amm && git pull && php8.4 artisan migrate --force && php8.4 artisan 
 - `view:cache` NO existe en Laravel — siempre usar `view:clear`
 - Route model binding usa **slug** en Agencia y Vehiculo — URLs de JS deben usar `{{ $model->slug }}`
 - **Alpine.js y SortableJS no mezclar** — Alpine en contenedor padre bloquea drag events de Sortable
+- **`Route::resource` en español singulariza mal** — `vendedores` → `{vendedore}`. Siempre agregar `->parameters(['vendedores' => 'vendedor'])` a recursos con nombres en español. Sin esto el route model binding falla con 404.
+- **Deploy completo en servidor**: `git pull && php8.4 artisan route:clear && php8.4 artisan view:clear && npm run build` — sin `npm run build` el CSS no incluye clases nuevas
 - Spatie middleware aliases deben estar en `bootstrap/app.php` (no en Kernel — Laravel 11)
 - CSRF exclusión del webhook en `bootstrap/app.php`: `$middleware->validateCsrfTokens(except: ['stripe/webhook'])`
+- **Admin layout**: sin `max-w-[1280px]` — es full width. El max-width de 1280px es solo para `.container-amm` dentro del contenido
+- **Guest layout**: panel derecho (formulario) debe tener `bg-[#111111]` fijo para que `input-amm-dark` (text-white) sea legible independientemente del dark mode del sistema

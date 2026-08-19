@@ -123,6 +123,28 @@
                     </div>
                 @endif
 
+                {{-- VIDEOS --}}
+                @if($vehiculo->youtubeVideos->isNotEmpty())
+                    <div class="bg-card border border-base rounded-2xl p-6 space-y-4">
+                        <h2 class="font-semibold text-base">Videos</h2>
+                        <div class="space-y-4">
+                            @foreach($vehiculo->youtubeVideos as $video)
+                                @if($video->embed_url)
+                                    <div class="aspect-video rounded-xl overflow-hidden bg-black">
+                                        <iframe src="{{ $video->embed_url }}"
+                                                class="w-full h-full"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen
+                                                loading="lazy">
+                                        </iframe>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 {{-- CERTIFICACIÓN --}}
                 @if($cert)
                     <div class="bg-card border border-[#2ecc71]/30 rounded-2xl p-6">

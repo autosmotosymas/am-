@@ -1,4 +1,8 @@
-<x-agencia-layout title="Leads">
+<x-agencia-layout title="Prospectos">
+
+    <div class="flex justify-end mb-3">
+        <a href="{{ route('agencia.leads.export') }}" class="btn-outline text-sm">↓ Exportar CSV</a>
+    </div>
 
     {{-- Tabs de filtro por status --}}
     <div class="flex flex-wrap gap-2 mb-6">
@@ -57,12 +61,28 @@
                                 <span class="text-xs text-muted">{{ $lead->created_at->diffForHumans() }}</span>
                             </div>
 
-                            {{-- Vehículo --}}
+                            {{-- Vehículo + status --}}
                             @if($lead->vehiculo)
-                                <a href="{{ route('vehiculo.show', $lead->vehiculo) }}" target="_blank"
-                                   class="text-xs text-brand-orange hover:underline">
-                                    {{ $lead->vehiculo->anio }} {{ $lead->vehiculo->marca }} {{ $lead->vehiculo->modelo }}
-                                </a>
+                                @php
+                                    $statusVehiculo = [
+                                        'disponible' => ['label' => 'Disponible', 'class' => 'bg-green-500/10 text-green-400 border-green-500/20'],
+                                        'inactivo'   => ['label' => 'Pausado',    'class' => 'bg-gray-500/10 text-gray-400 border-gray-500/20'],
+                                        'apartado'   => ['label' => 'Apartado',   'class' => 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'],
+                                        'vendido'    => ['label' => 'Vendido',    'class' => 'bg-red-500/10 text-red-400 border-red-500/20'],
+                                    ][$lead->vehiculo->status] ?? ['label' => $lead->vehiculo->status, 'class' => 'bg-gray-500/10 text-gray-400 border-gray-500/20'];
+                                @endphp
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <a href="{{ route('vehiculo.show', $lead->vehiculo) }}" target="_blank"
+                                       class="text-xs text-brand-orange hover:underline">
+                                        {{ $lead->vehiculo->anio }} {{ $lead->vehiculo->marca }} {{ $lead->vehiculo->modelo }}
+                                    </a>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded-full border {{ $statusVehiculo['class'] }}">
+                                        {{ $statusVehiculo['label'] }}
+                                    </span>
+                                    @if($lead->vehiculo->status === 'vendido')
+                                        <span class="text-[10px] text-muted italic">— no llamar para este auto</span>
+                                    @endif
+                                </div>
                             @endif
 
                             {{-- Contacto --}}

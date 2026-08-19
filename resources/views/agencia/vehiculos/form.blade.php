@@ -218,6 +218,54 @@
                 @endif
             </div>
 
+            {{-- ── VIDEOS ── --}}
+            @if(($limiteVideos ?? 0) > 0)
+            @php
+                $videosActuales = old('videos_youtube', $editando ? $vehiculo->youtubeVideos->pluck('youtube_url')->toArray() : []);
+            @endphp
+            <div class="bg-card border border-base rounded-2xl p-6 space-y-4"
+                 x-data="{
+                     urls: {{ json_encode($videosActuales) }},
+                     limite: {{ $limiteVideos }},
+                     agregar() { if (this.urls.length < this.limite) this.urls.push('') },
+                     quitar(i) { this.urls.splice(i, 1) }
+                 }">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-semibold text-base">Videos de YouTube</h2>
+                    <span class="text-xs text-muted" x-text="urls.length + ' / ' + limite + ' videos'"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <template x-for="(url, i) in urls" :key="i">
+                        <div class="flex gap-2">
+                            <input type="url"
+                                   :name="'videos_youtube[' + i + ']'"
+                                   x-model="urls[i]"
+                                   class="flex-1 bg-card2 border border-base text-base rounded-xl px-3 py-2.5 focus:outline-none focus:border-brand-orange transition-colors text-sm"
+                                   placeholder="https://www.youtube.com/watch?v=...">
+                            <button type="button" @click="quitar(i)"
+                                    class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl border border-base hover:border-red-400/60 hover:text-red-400 transition-colors text-muted">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <button type="button" @click="agregar()"
+                        :disabled="urls.length >= limite"
+                        class="flex items-center gap-1.5 text-sm text-brand-orange hover:underline disabled:opacity-40 disabled:no-underline disabled:cursor-not-allowed transition-opacity">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                    </svg>
+                    Agregar video
+                </button>
+
+                @error('videos_youtube.*') <p class="text-xs text-red-400">URL de video inválida</p> @enderror
+            </div>
+            @endif
+
             {{-- ── FOTOS ── --}}
             <div class="bg-card border border-base rounded-2xl p-6 space-y-4">
                 <div class="flex items-center justify-between">

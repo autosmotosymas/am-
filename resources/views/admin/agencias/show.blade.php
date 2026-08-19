@@ -48,6 +48,9 @@
                             {{ $agencia->activo ? 'Desactivar' : 'Activar' }}
                         </button>
                     </form>
+                    <a href="{{ route('admin.agencias.edit', $agencia) }}" class="btn-ghost text-sm">
+                        Editar datos
+                    </a>
                     <a href="{{ route('agencia.show', $agencia) }}" target="_blank" class="btn-ghost text-sm">
                         Ver perfil público →
                     </a>

@@ -71,6 +71,11 @@ class Vehiculo extends Model
         return $this->hasOne(Certificacion::class)->where('resultado', 'aprobado')->latestOfMany();
     }
 
+    public function youtubeVideos(): HasMany
+    {
+        return $this->hasMany(VehiculoVideo::class)->orderBy('orden');
+    }
+
     public function leads(): HasMany
     {
         return $this->hasMany(Lead::class);

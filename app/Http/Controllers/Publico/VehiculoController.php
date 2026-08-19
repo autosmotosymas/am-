@@ -18,6 +18,7 @@ class VehiculoController extends Controller
         // Cargar relaciones necesarias para la ficha
         $vehiculo->load([
             'fotos',
+            'youtubeVideos',
             'agencia',
             'certificacion.verificador',
         ]);

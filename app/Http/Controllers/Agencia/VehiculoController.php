@@ -7,6 +7,7 @@ use App\Jobs\NotificarCambioPrecio;
 use App\Jobs\NotificarCambioStatus;
 use App\Models\Vehiculo;
 use App\Models\VehiculoFoto;
+use App\Models\VehiculoVideo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +46,9 @@ class VehiculoController extends Controller
         $activos = $agencia->vehiculos()->whereIn('status', ['disponible', 'inactivo'])->count();
         $limite  = $plan?->max_vehiculos ?? 20;
 
-        return view('agencia.vehiculos.form', compact('agencia', 'plan', 'activos', 'limite'));
+        $limiteVideos = $plan?->videos ?? 0;
+
+        return view('agencia.vehiculos.form', compact('agencia', 'plan', 'activos', 'limite', 'limiteVideos'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -61,6 +64,7 @@ class VehiculoController extends Controller
         $vehiculo = Vehiculo::create($data);
 
         $this->guardarFotos($request, $vehiculo);
+        $this->guardarVideos($request, $vehiculo);
 
         return redirect()->route('agencia.vehiculos.index')
             ->with('ok', 'Vehículo publicado correctamente.');
@@ -71,10 +75,11 @@ class VehiculoController extends Controller
         $agencia = $this->agencia();
         $this->autorizar($vehiculo, $agencia);
 
-        $vehiculo->load('fotos');
-        $plan = $agencia->suscripcionActiva?->plan;
+        $vehiculo->load('fotos', 'youtubeVideos');
+        $plan         = $agencia->suscripcionActiva?->plan;
+        $limiteVideos = $plan?->videos ?? 0;
 
-        return view('agencia.vehiculos.form', compact('vehiculo', 'agencia', 'plan'));
+        return view('agencia.vehiculos.form', compact('vehiculo', 'agencia', 'plan', 'limiteVideos'));
     }
 
     public function update(Request $request, Vehiculo $vehiculo): RedirectResponse
@@ -100,6 +105,10 @@ class VehiculoController extends Controller
         }
 
         $this->guardarFotos($request, $vehiculo);
+
+        // Reemplazar videos: borrar los anteriores e insertar los nuevos
+        $vehiculo->youtubeVideos()->delete();
+        $this->guardarVideos($request, $vehiculo);
 
         // Eliminar fotos marcadas para borrar
         if ($request->has('fotos_eliminar')) {
@@ -162,6 +171,8 @@ class VehiculoController extends Controller
             'destacado'         => ['boolean'],
             'fotos'             => ['nullable', 'array', 'max:30'],
             'fotos.*'           => ['image', 'max:5120'], // 5 MB por foto
+            'videos_youtube'    => ['nullable', 'array', 'max:20'],
+            'videos_youtube.*'  => ['nullable', 'url', 'max:255'],
         ]);
     }
 
@@ -184,6 +195,22 @@ class VehiculoController extends Controller
             ]);
 
             $esPrimera = false;
+        }
+    }
+
+    private function guardarVideos(Request $request, Vehiculo $vehiculo): void
+    {
+        $urls = array_filter(
+            $request->input('videos_youtube', []),
+            fn ($url) => ! empty(trim($url ?? ''))
+        );
+
+        foreach (array_values($urls) as $orden => $url) {
+            VehiculoVideo::create([
+                'vehiculo_id' => $vehiculo->id,
+                'youtube_url' => trim($url),
+                'orden'       => $orden,
+            ]);
         }
     }
 

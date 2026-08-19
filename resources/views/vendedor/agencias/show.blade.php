@@ -57,8 +57,8 @@
                             <div>
                                 <p class="font-bold text-white">{{ $plan->nombre }}</p>
                                 <p class="text-2xl font-bold text-brand-orange mt-0.5">
-                                    ${{ number_format($plan->precio_mensual, 0) }}
-                                    <span class="text-sm font-normal text-gray-500">/mes</span>
+                                    {{ $plan->precio_formateado }}
+                                    <span class="text-sm font-normal text-gray-500">/ {{ $plan->duracion_label }}</span>
                                 </p>
                             </div>
                         </div>

@@ -70,6 +70,8 @@
                                 </button>
                             </form>
                         @endif
+                        <a href="{{ route('admin.certificaciones.show', $cert) }}"
+                           class="text-xs text-muted hover:text-base">Ver</a>
                         <a href="{{ route('admin.certificaciones.edit', $cert) }}"
                            class="text-xs text-brand-orange hover:underline">Editar</a>
                     </div>
