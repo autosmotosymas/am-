@@ -54,7 +54,45 @@
                     <a href="{{ route('agencia.show', $agencia) }}" target="_blank" class="btn-ghost text-sm">
                         Ver perfil público →
                     </a>
+                    <form method="POST" action="{{ route('admin.agencias.destroy', $agencia) }}"
+                          onsubmit="return confirm('¿Eliminar {{ $agencia->nombre }} permanentemente? Esta acción no se puede deshacer.')">
+                        @csrf @method('DELETE')
+                        <button class="btn-ghost text-sm text-red-400 border-red-500/20 hover:bg-red-500/10">
+                            Eliminar agencia
+                        </button>
+                    </form>
                 </div>
+            </div>
+
+            {{-- Usuarios de la agencia --}}
+            <div class="bg-card border border-base rounded-2xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-base flex items-center justify-between">
+                    <h3 class="font-semibold text-base">Usuarios</h3>
+                    <span class="text-xs text-muted">{{ $usuarios->count() }} usuario(s)</span>
+                </div>
+                @if($usuarios->isEmpty())
+                    <p class="text-base text-muted text-center py-8">Sin usuarios asociados.</p>
+                @else
+                    <div class="divide-y divide-base">
+                        @foreach($usuarios as $u)
+                            <div class="flex items-center gap-3 px-5 py-3">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-base truncate">{{ $u->name }}</p>
+                                    <p class="text-xs text-muted">{{ $u->email }}</p>
+                                    <p class="text-xs text-muted capitalize">{{ $u->getRoleNames()->first() ?? '—' }}</p>
+                                </div>
+                                <form method="POST"
+                                      action="{{ route('admin.agencias.reset-password', [$agencia, $u]) }}"
+                                      onsubmit="return confirm('¿Generar nueva contraseña para {{ $u->name }}?')">
+                                    @csrf @method('PATCH')
+                                    <button class="text-xs text-brand-orange hover:underline shrink-0">
+                                        Reset contraseña
+                                    </button>
+                                </form>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             {{-- Últimos vehículos --}}

@@ -135,6 +135,16 @@ class AgenciaController extends Controller
         return view('admin.agencias.edit', compact('agencia'));
     }
 
+    public function resetPassword(Agencia $agencia, User $user): RedirectResponse
+    {
+        abort_unless($user->agencia_id === $agencia->id, 403);
+
+        $nueva = \Illuminate\Support\Str::random(10);
+        $user->update(['password' => \Illuminate\Support\Facades\Hash::make($nueva)]);
+
+        return back()->with('ok', "Nueva contraseña de {$user->name}: {$nueva}  —  Cópiala antes de salir de esta página.");
+    }
+
     public function destroy(Agencia $agencia): RedirectResponse
     {
         $agencia->delete();

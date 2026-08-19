@@ -156,6 +156,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('agencias/{agencia}/toggle', [AdminAgenciaController::class, 'toggleActivo'])->name('agencias.toggle');
     Route::patch('agencias/{agencia}/verificar', [AdminAgenciaController::class, 'verificar'])->name('agencias.verificar');
     Route::post('agencias/{agencia}/suscribir', [AdminAgenciaController::class, 'suscribir'])->name('agencias.suscribir');
+    Route::patch('agencias/{agencia}/usuarios/{user}/reset-password', [AdminAgenciaController::class, 'resetPassword'])->name('agencias.reset-password');
     Route::post('agencias/bulk', [AdminAgenciaController::class, 'bulkAction'])->name('agencias.bulk');
 
     Route::resource('verificadores', VerificadorController::class);
