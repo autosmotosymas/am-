@@ -21,11 +21,17 @@
         </div>
     @endif
 
+    {{-- Datos de planes fuera del atributo HTML para evitar conflictos de escapado --}}
+    <script>
+        window.__ammPlanes    = {!! json_encode($planesJson) !!};
+        window.__ammPlanActual = {!! json_encode($suscripcion?->plan_id) !!};
+    </script>
+
     {{-- Selector de planes con Alpine.js --}}
     <div x-data="{
         duracion: '{{ $suscripcion?->plan?->duracion ?? 'trimestral' }}',
-        planes: @json($planesJson),
-        planActualId: @json($suscripcion?->plan_id),
+        planes: window.__ammPlanes,
+        planActualId: window.__ammPlanActual,
         mesesMap: { trimestral: 3, semestral: 6, anual: 12 },
         getPlan(grupo) { return this.planes[grupo]?.[this.duracion] ?? null; },
         esCurrent(grupo) {
@@ -46,8 +52,14 @@
         getPlanId(grupo) {
             const p = this.getPlan(grupo);
             return p ? p.id : '';
+        },
+        updateForms() {
+            document.querySelectorAll('[data-plan-input]').forEach(input => {
+                const grupo = input.dataset.planInput;
+                input.value = this.getPlanId(grupo) || input.value;
+            });
         }
-    }">
+    }" x-init="$watch('duracion', () => updateForms())">
 
         {{-- Toggle duración --}}
         <div class="flex bg-card2 border border-base rounded-2xl p-1 gap-1 mb-6">
@@ -141,9 +153,10 @@
                 @else
                     <form method="POST" action="{{ route('agencia.suscripcion.checkout') }}">
                         @csrf
-                        {{-- Alpine actualiza :value al cambiar duración; value= es el fallback PHP (trimestral) --}}
+                        {{-- data-plan-input actualizado por el watcher; value= fallback PHP (trimestral) --}}
                         <input type="hidden" name="plan_id"
                                value="{{ $dt['id'] ?? '' }}"
+                               data-plan-input="{{ $grupo }}"
                                :value="getPlanId('{{ $grupo }}')">
                         <button type="submit"
                                 class="w-full py-2.5 rounded-xl text-sm font-semibold transition-colors
