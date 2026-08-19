@@ -68,9 +68,12 @@
 
             @foreach(['base', 'medio', 'premium'] as $grupo)
             @php
-                $datosTrimestral = $planesJson[$grupo]['trimestral'] ?? null;
-                $nombrePlan      = ucfirst($grupo);
-                $esMedio         = $grupo === 'medio';
+                $dt         = $planesJson[$grupo]['trimestral'] ?? null; // fallback server-side
+                $nombrePlan = ucfirst($grupo);
+                $esMedio    = $grupo === 'medio';
+                // Detectar si este grupo es el plan actual
+                $esCurrent  = $suscripcion && $dt && isset($planesJson[$grupo][$suscripcion->plan?->duracion ?? ''])
+                              && $planesJson[$grupo][$suscripcion->plan->duracion]['id'] == $suscripcion->plan_id;
             @endphp
 
             <div class="bg-card border {{ $esMedio ? 'border-brand-orange/40' : 'border-base' }} rounded-2xl p-6 flex flex-col relative">
@@ -85,39 +88,42 @@
                 <div class="mb-5">
                     <h2 class="text-lg font-bold text-base">{{ $nombrePlan }}</h2>
 
-                    {{-- Precio total del período --}}
+                    {{-- Precio: Alpine.js actualiza, PHP como fallback visible --}}
                     <div class="flex items-baseline gap-1 mt-2">
-                        <span class="text-3xl font-black text-base" x-text="getPrecio('{{ $grupo }}')"></span>
+                        <span class="text-3xl font-black text-base"
+                              x-text="getPrecio('{{ $grupo }}') || '{{ $dt ? '$'.number_format((float)$dt['precio'], 0, '.', ',') : '' }}'">
+                            {{ $dt ? '$'.number_format((float)$dt['precio'], 0, '.', ',') : '' }}
+                        </span>
                         <span class="text-sm text-muted">total</span>
                     </div>
-
-                    {{-- Equivalente mensual --}}
                     <p class="text-xs text-muted mt-0.5">
-                        aprox. <span x-text="getPrecioMensual('{{ $grupo }}')"></span>/mes
+                        aprox. <span x-text="getPrecioMensual('{{ $grupo }}') || '{{ $dt ? '$'.number_format((float)$dt['precio'] / max($dt['meses'],1), 0, '.', ',') : '' }}'">
+                            {{ $dt ? '$'.number_format((float)$dt['precio'] / max($dt['meses'], 1), 0, '.', ',') : '' }}
+                        </span>/mes
                     </p>
                 </div>
 
-                {{-- Features (los mismos para todas las duraciones del plan) --}}
-                @if($datosTrimestral)
+                {{-- Features --}}
+                @if($dt)
                 <ul class="space-y-2 flex-1 mb-6">
                     <li class="flex items-center gap-2 text-sm text-muted">
                         <span class="text-brand-orange shrink-0">✓</span>
-                        <strong class="text-base">{{ $datosTrimestral['max_vehiculos'] }}</strong>&nbsp;espacios de anuncios
+                        <strong class="text-base">{{ $dt['max_vehiculos'] }}</strong>&nbsp;espacios de anuncios
                     </li>
                     <li class="flex items-center gap-2 text-sm text-muted">
                         <span class="text-brand-orange shrink-0">✓</span>
-                        <strong class="text-base">{{ $datosTrimestral['destacados'] }}</strong>&nbsp;anuncios destacados
+                        <strong class="text-base">{{ $dt['destacados'] }}</strong>&nbsp;anuncios destacados
                     </li>
                     <li class="flex items-center gap-2 text-sm text-muted">
                         <span class="text-brand-orange shrink-0">✓</span>
-                        <strong class="text-base">{{ $datosTrimestral['videos'] }}</strong>&nbsp;videos en tus anuncios
+                        <strong class="text-base">{{ $dt['videos'] }}</strong>&nbsp;videos en tus anuncios
                     </li>
                     <li class="flex items-center gap-2 text-sm text-muted">
                         <span class="text-brand-orange shrink-0">✓</span>
                         Banner de certificado
                     </li>
-                    @if(is_array($datosTrimestral['features']))
-                        @foreach(array_slice($datosTrimestral['features'], 4) as $feature)
+                    @if(is_array($dt['features']))
+                        @foreach(array_slice($dt['features'], 4) as $feature)
                             <li class="flex items-center gap-2 text-sm text-muted">
                                 <span class="text-brand-orange shrink-0">✓</span>
                                 {{ $feature }}
@@ -127,17 +133,18 @@
                 </ul>
                 @endif
 
-                {{-- Botón acción --}}
-                <div x-show="esCurrent('{{ $grupo }}')">
+                {{-- Botón: siempre visible server-side; plan_id tiene fallback PHP --}}
+                @if($esCurrent)
                     <div class="w-full text-center py-2.5 rounded-xl border border-green-500/30 text-green-400 text-sm font-medium">
                         Plan actual ✓
                     </div>
-                </div>
-
-                <div x-show="!esCurrent('{{ $grupo }}')">
+                @else
                     <form method="POST" action="{{ route('agencia.suscripcion.checkout') }}">
                         @csrf
-                        <input type="hidden" name="plan_id" :value="getPlanId('{{ $grupo }}')">
+                        {{-- Alpine actualiza :value al cambiar duración; value= es el fallback PHP (trimestral) --}}
+                        <input type="hidden" name="plan_id"
+                               value="{{ $dt['id'] ?? '' }}"
+                               :value="getPlanId('{{ $grupo }}')">
                         <button type="submit"
                                 class="w-full py-2.5 rounded-xl text-sm font-semibold transition-colors
                                        {{ $esMedio
@@ -146,7 +153,7 @@
                             {{ $suscripcion ? 'Cambiar a este plan' : 'Suscribirme' }} →
                         </button>
                     </form>
-                </div>
+                @endif
 
             </div>
             @endforeach
@@ -189,6 +196,20 @@
                 @endforeach
             </div>
         </div>
+    @endif
+
+    {{-- Botón de prueba $10 — solo si existe el plan prueba --}}
+    @if(isset($planPrueba) && $planPrueba)
+    <div class="fixed bottom-6 right-6 z-50">
+        <form method="POST" action="{{ route('agencia.suscripcion.checkout') }}">
+            @csrf
+            <input type="hidden" name="plan_id" value="{{ $planPrueba->id }}">
+            <button type="submit"
+                    class="flex items-center gap-2 bg-gray-900 border border-white/10 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl hover:bg-gray-800 transition-colors">
+                🧪 Prueba $10
+            </button>
+        </form>
+    </div>
     @endif
 
     @error('plan_id')

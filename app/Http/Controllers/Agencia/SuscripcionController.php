@@ -46,7 +46,9 @@ class SuscripcionController extends Controller
             ];
         }
 
-        return view('agencia.suscripcion.index', compact('planesJson', 'suscripcion', 'agencia'));
+        $planPrueba = Plan::where('slug', 'prueba-10pesos')->first();
+
+        return view('agencia.suscripcion.index', compact('planesJson', 'suscripcion', 'agencia', 'planPrueba'));
     }
 
     /**
