@@ -116,7 +116,7 @@ class AgenciaController extends Controller
     {
         $data = $request->validate([
             'nombre'    => ['required', 'string', 'max:100'],
-            'email'     => ['required', 'email', 'unique:agencias,email'],
+            'email'     => ['required', 'email', 'unique:agencias,email', 'unique:users,email'],
             'telefono'  => ['required', 'string', 'max:20'],
             'ciudad'    => ['required', 'string', 'max:60'],
             'estado'    => ['required', 'string', 'max:60'],
@@ -124,10 +124,20 @@ class AgenciaController extends Controller
             'direccion' => ['nullable', 'string', 'max:200'],
         ]);
 
-        $agencia = Agencia::create($data);
+        $agencia = Agencia::create(array_merge($data, ['activo' => false]));
+
+        // Crear usuario con rol agencia
+        $password = \Illuminate\Support\Str::random(10);
+        $user = User::create([
+            'name'       => $data['nombre'],
+            'email'      => $data['email'],
+            'password'   => \Illuminate\Support\Facades\Hash::make($password),
+            'agencia_id' => $agencia->id,
+        ]);
+        $user->assignRole('agencia');
 
         return redirect()->route('admin.agencias.show', $agencia)
-            ->with('ok', 'Agencia creada.');
+            ->with('ok', "Agencia creada. Contraseña de acceso: {$password}  —  Cópiala antes de salir de esta página.");
     }
 
     public function edit(Agencia $agencia): View
