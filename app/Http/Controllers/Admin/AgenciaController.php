@@ -100,7 +100,7 @@ class AgenciaController extends Controller
             'plan_id'           => $data['plan_id'],
             'status'            => 'activa',
             'fecha_inicio'      => now(),
-            'fecha_vencimiento' => now()->addMonths($data['meses']),
+            'fecha_vencimiento' => now()->addMonths((int) $data['meses']),
             'precio_pagado'     => 0,
         ]);
 
