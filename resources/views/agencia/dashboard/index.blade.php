@@ -82,7 +82,7 @@
                     </div>
                 @else
                     <p class="text-base text-red-400">Sin suscripción activa.</p>
-                    <a href="#" class="btn-primary mt-3 text-xs">Contratar plan</a>
+                    <a href="{{ route('agencia.suscripcion.index') }}" class="btn-primary mt-3 text-xs">Contratar plan</a>
                 @endif
             </div>
 
