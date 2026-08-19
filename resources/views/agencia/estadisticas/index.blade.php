@@ -1,10 +1,24 @@
 <x-agencia-layout title="Estadísticas">
 
+    {{-- Filtro de período --}}
+    <div class="flex flex-wrap items-center gap-2 mb-6">
+        <span class="text-xs text-muted font-medium uppercase tracking-widest mr-1">Período:</span>
+        @foreach($periodos as $val => $label)
+            <a href="{{ route('agencia.estadisticas', ['periodo' => $val]) }}"
+               class="px-3 py-1.5 text-sm rounded-xl border transition-colors
+                      {{ $periodo === $val
+                          ? 'bg-brand-orange text-white border-brand-orange'
+                          : 'bg-card border-base text-muted hover:border-brand-orange/40 hover:text-base' }}">
+                {{ $label }}
+            </a>
+        @endforeach
+    </div>
+
     {{-- KPIs --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         @foreach([
             ['label' => 'Vistas totales',    'valor' => number_format($stats['vistas_total']),    'color' => 'text-blue-400'],
-            ['label' => 'Leads totales',     'valor' => number_format($stats['leads_total']),     'color' => 'text-brand-orange'],
+            ['label' => 'Leads en período',  'valor' => number_format($stats['leads_total']),     'color' => 'text-brand-orange'],
             ['label' => 'Leads ganados',     'valor' => number_format($stats['leads_ganados']),   'color' => 'text-green-400'],
             ['label' => 'Vehículos activos', 'valor' => number_format($stats['vehiculos_activos']),'color' => 'text-base'],
         ] as $s)
@@ -19,9 +33,9 @@
 
         {{-- Leads por mes --}}
         <div class="bg-card border border-base rounded-2xl p-6">
-            <h3 class="font-semibold text-base mb-5">Leads últimos 6 meses</h3>
+            <h3 class="font-semibold text-base mb-5">Leads por mes</h3>
             @if($leadsPorMes->isEmpty())
-                <p class="text-base text-muted text-center py-8">Sin datos aún.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos en este período.</p>
             @else
                 @php $maxLeads = $leadsPorMes->max() ?: 1; @endphp
                 <div class="space-y-3">
@@ -47,7 +61,7 @@
         <div class="bg-card border border-base rounded-2xl p-6">
             <h3 class="font-semibold text-base mb-5">Canal de contacto preferido</h3>
             @if($leadsPorTipo->isEmpty())
-                <p class="text-base text-muted text-center py-8">Sin datos aún.</p>
+                <p class="text-base text-muted text-center py-8">Sin datos en este período.</p>
             @else
                 @php
                     $totalTipo = $leadsPorTipo->sum();
@@ -119,6 +133,65 @@
                 </div>
             @endif
         </div>
+
     </div>
+
+    {{-- Historial de pagos --}}
+    @if($suscripciones->isNotEmpty())
+        <div class="mt-8 bg-card border border-base rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-base">
+                <h3 class="font-semibold text-base">Historial de suscripciones</h3>
+            </div>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-xs text-muted uppercase border-b border-base">
+                        <th class="text-left px-6 py-3">Plan</th>
+                        <th class="text-center px-4 py-3 hidden sm:table-cell">Inicio</th>
+                        <th class="text-center px-4 py-3 hidden sm:table-cell">Vencimiento</th>
+                        <th class="text-center px-4 py-3">Status</th>
+                        <th class="text-right px-6 py-3 hidden md:table-cell">Precio</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-base">
+                    @foreach($suscripciones as $sus)
+                        @php
+                            $stColors = [
+                                'activa'    => 'text-green-400 bg-green-500/10 border-green-500/20',
+                                'prueba'    => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+                                'vencida'   => 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+                                'cancelada' => 'text-muted bg-card2 border-base',
+                            ];
+                        @endphp
+                        <tr class="hover:bg-card2 transition-colors">
+                            <td class="px-6 py-3.5">
+                                <p class="font-medium text-base">{{ $sus->plan?->nombre ?? 'Plan eliminado' }}</p>
+                                @if($sus->plan?->duracion)
+                                    <p class="text-xs text-muted capitalize">{{ $sus->plan->duracion }}</p>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center text-muted hidden sm:table-cell">
+                                {{ $sus->fecha_inicio?->format('d/m/Y') ?? '—' }}
+                            </td>
+                            <td class="px-4 py-3 text-center text-muted hidden sm:table-cell">
+                                {{ $sus->fecha_vencimiento?->format('d/m/Y') ?? '—' }}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="text-xs px-2 py-0.5 rounded-full border capitalize {{ $stColors[$sus->status] ?? 'text-muted bg-card2 border-base' }}">
+                                    {{ $sus->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-3 text-right text-muted hidden md:table-cell">
+                                @if($sus->precio_pagado)
+                                    ${{ number_format($sus->precio_pagado, 2) }}
+                                @else
+                                    —
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 
 </x-agencia-layout>

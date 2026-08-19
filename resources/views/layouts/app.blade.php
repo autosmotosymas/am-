@@ -234,8 +234,8 @@
                                 <a href="{{ route('home') }}#contacto" class="text-base text-muted hover:text-brand-orange transition-colors">Escríbenos</a>
                             @endif
                         </li>
-                        <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Aviso de privacidad</a></li>
-                        <li><a href="#" class="text-base text-muted hover:text-brand-orange transition-colors">Términos y condiciones</a></li>
+                        <li><a href="{{ route('privacidad') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Aviso de privacidad</a></li>
+                        <li><a href="{{ route('terminos') }}" class="text-base text-muted hover:text-brand-orange transition-colors">Términos y condiciones</a></li>
                     </ul>
                 </div>
             </div>

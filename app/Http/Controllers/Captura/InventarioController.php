@@ -92,4 +92,60 @@ class InventarioController extends Controller
             ->route('captura.index')
             ->with('ok', "✓ {$vehiculo->anio} {$vehiculo->marca} {$vehiculo->modelo} capturado correctamente.");
     }
+
+    public function edit(Vehiculo $vehiculo): View
+    {
+        abort_unless($vehiculo->user_id === auth()->id(), 403);
+        $agencia  = auth()->user()->agencia;
+        $catalogo = config('catalogo');
+
+        return view('captura.editar', compact('vehiculo', 'agencia', 'catalogo'));
+    }
+
+    public function update(Request $request, Vehiculo $vehiculo): RedirectResponse
+    {
+        abort_unless($vehiculo->user_id === auth()->id(), 403);
+
+        $data = $request->validate([
+            'tipo'        => ['required', 'in:auto,moto,camioneta,camion,otro'],
+            'marca'       => ['required', 'string', 'max:60'],
+            'modelo'      => ['required', 'string', 'max:60'],
+            'anio'        => ['required', 'integer', 'min:1970', 'max:' . (date('Y') + 1)],
+            'version'     => ['nullable', 'string', 'max:80'],
+            'precio'      => ['required', 'numeric', 'min:0'],
+            'kilometraje' => ['required', 'integer', 'min:0'],
+            'transmision' => ['required', 'in:manual,automatica,cvt'],
+            'combustible' => ['required', 'in:gasolina,diesel,electrico,hibrido,gas'],
+            'color'       => ['required', 'string', 'max:40'],
+            'vin'         => ['nullable', 'string', 'max:17'],
+            'notas'       => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $vehiculo->update([
+            'tipo'        => $data['tipo'],
+            'marca'       => $data['marca'],
+            'modelo'      => $data['modelo'],
+            'anio'        => $data['anio'],
+            'version'     => $data['version'] ?? null,
+            'precio'      => $data['precio'],
+            'kilometraje' => $data['kilometraje'],
+            'transmision' => $data['transmision'],
+            'combustible' => $data['combustible'],
+            'color'       => $data['color'],
+            'vin'         => $data['vin'] ?? null,
+            'descripcion' => $data['notas'] ?? null,
+        ]);
+
+        return redirect()->route('captura.index')
+            ->with('ok', "✓ {$vehiculo->anio} {$vehiculo->marca} {$vehiculo->modelo} actualizado.");
+    }
+
+    public function destroy(Vehiculo $vehiculo): RedirectResponse
+    {
+        abort_unless($vehiculo->user_id === auth()->id(), 403);
+        $vehiculo->delete();
+
+        return redirect()->route('captura.index')
+            ->with('ok', 'Vehículo eliminado.');
+    }
 }

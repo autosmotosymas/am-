@@ -1,6 +1,12 @@
 <x-admin-layout title="Verificadores">
 
-    <div class="flex justify-end mb-5">
+    <div class="flex flex-col sm:flex-row gap-3 justify-between mb-5">
+        <form method="GET" class="flex gap-2 flex-1 max-w-sm">
+            <input type="text" name="q" value="{{ request('q') }}"
+                   placeholder="Buscar verificador…"
+                   class="flex-1 bg-card border border-base text-base rounded-xl px-3 py-2 focus:outline-none focus:border-brand-orange transition-colors">
+            <button type="submit" class="btn-outline px-4">Buscar</button>
+        </form>
         <a href="{{ route('admin.verificadores.create') }}" class="btn-primary">+ Nuevo verificador</a>
     </div>
 

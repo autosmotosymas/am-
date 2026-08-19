@@ -74,6 +74,19 @@
                             <span class="text-xs {{ $st[1] }} font-medium">{{ $st[0] }}</span>
                             <p class="text-[10px] text-gray-600 mt-0.5">{{ $v->created_at->diffForHumans(null, true) }}</p>
                         </div>
+
+                        {{-- Acciones --}}
+                        <div class="shrink-0 flex flex-col gap-1 ml-1">
+                            <a href="{{ route('captura.edit', $v) }}"
+                               class="text-xs text-brand-orange font-medium">Editar</a>
+                            @if($v->status === 'inactivo')
+                                <form method="POST" action="{{ route('captura.destroy', $v) }}"
+                                      onsubmit="return confirm('¿Eliminar este vehículo?')">
+                                    @csrf @method('DELETE')
+                                    <button class="text-xs text-red-400">Borrar</button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>

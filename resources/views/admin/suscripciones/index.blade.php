@@ -17,7 +17,10 @@
                 </a>
             @endforeach
         </div>
-        <a href="{{ route('admin.suscripciones.create') }}" class="btn-primary text-sm">+ Nueva</a>
+        <div class="flex gap-2">
+            <a href="{{ route('admin.suscripciones.export') }}" class="btn-outline text-sm">↓ CSV</a>
+            <a href="{{ route('admin.suscripciones.create') }}" class="btn-primary text-sm">+ Nueva</a>
+        </div>
     </div>
 
     <div class="bg-card border border-base rounded-2xl overflow-hidden">
@@ -72,6 +75,8 @@
                                         <button class="text-xs text-red-400 hover:underline">Cancelar</button>
                                     </form>
                                 @endif
+                                <a href="{{ route('admin.suscripciones.show', $sus) }}"
+                                   class="text-xs text-muted hover:text-base">Ver</a>
                                 <a href="{{ route('admin.suscripciones.edit', $sus) }}"
                                    class="text-xs text-brand-orange hover:underline">Editar</a>
                             </div>

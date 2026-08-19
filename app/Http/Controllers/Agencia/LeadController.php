@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class LeadController extends Controller
@@ -34,6 +35,39 @@ class LeadController extends Controller
         ];
 
         return view('agencia.leads.index', compact('leads', 'conteos'));
+    }
+
+    public function export(): Response
+    {
+        $agencia = auth()->user()->agencia;
+        abort_unless($agencia, 403);
+
+        $vehiculoIds = $agencia->vehiculos()->pluck('id');
+
+        $leads = Lead::with('vehiculo')
+            ->whereIn('vehiculo_id', $vehiculoIds)
+            ->latest()
+            ->get();
+
+        $csv = implode(',', ['ID', 'Nombre', 'Teléfono', 'Email', 'Tipo', 'Status', 'Vehículo', 'Fecha']) . "\n";
+
+        foreach ($leads as $lead) {
+            $csv .= implode(',', [
+                $lead->id,
+                '"' . str_replace('"', '""', $lead->nombre) . '"',
+                $lead->telefono,
+                $lead->email ?? '',
+                $lead->tipo,
+                $lead->status,
+                '"' . ($lead->vehiculo ? $lead->vehiculo->anio . ' ' . $lead->vehiculo->marca . ' ' . $lead->vehiculo->modelo : '') . '"',
+                $lead->created_at->format('d/m/Y H:i'),
+            ]) . "\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="leads-' . date('Y-m-d') . '.csv"',
+        ]);
     }
 
     public function marcarLeido(Lead $lead): RedirectResponse

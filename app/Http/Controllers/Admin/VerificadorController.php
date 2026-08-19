@@ -10,10 +10,18 @@ use Illuminate\View\View;
 
 class VerificadorController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $verificadores = Verificador::withCount('certificaciones')
-            ->latest()->paginate(20);
+        $q = Verificador::withCount('certificaciones');
+
+        if ($request->filled('q')) {
+            $busqueda = '%' . $request->q . '%';
+            $q->where(fn($query) => $query->where('nombre', 'like', $busqueda)
+                ->orWhere('zona', 'like', $busqueda)
+                ->orWhere('email', 'like', $busqueda));
+        }
+
+        $verificadores = $q->latest()->paginate(20)->withQueryString();
 
         return view('admin.verificadores.index', compact('verificadores'));
     }
