@@ -89,8 +89,9 @@ class StripeSyncPlans extends Command
             $this->newLine();
         }
 
+        $modo = str_starts_with($secret, 'sk_live') ? 'live' : 'test';
         $this->info('Listo. Los Price IDs quedaron guardados en la tabla planes.');
-        $this->line('Puedes verificarlos en: <href=https://dashboard.stripe.com/test/products>dashboard.stripe.com/test/products</>');
+        $this->line("Puedes verificarlos en: dashboard.stripe.com/{$modo}/products");
 
         return self::SUCCESS;
     }
