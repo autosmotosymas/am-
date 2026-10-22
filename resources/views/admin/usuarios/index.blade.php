@@ -92,7 +92,7 @@
                                 </form>
 
                                 @if($u->id !== auth()->id())
-                                    <form method="POST" action="{{ route('admin.usuarios.toggle', $u) }}">
+                                    <form method="POST" action="{{ route('admin.usuarios.toggle-activo', $u) }}">
                                         @csrf @method('PATCH')
                                         <button type="submit"
                                                 class="text-xs px-2 {{ $u->activo ? 'text-red-400 hover:text-red-300' : 'text-green-400 hover:text-green-300' }}">

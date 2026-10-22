@@ -103,7 +103,7 @@
                             : 'El usuario podrá volver a iniciar sesión.' }}
                     </p>
                 </div>
-                <form method="POST" action="{{ route('admin.usuarios.toggle', $usuario) }}">
+                <form method="POST" action="{{ route('admin.usuarios.toggle-activo', $usuario) }}">
                     @csrf @method('PATCH')
                     <button type="submit"
                             class="text-sm px-4 py-2 rounded-xl border transition-colors
