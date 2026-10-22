@@ -99,6 +99,15 @@
                                             {{ $u->activo ? 'Desactivar' : 'Activar' }}
                                         </button>
                                     </form>
+
+                                    <form method="POST" action="{{ route('admin.usuarios.destroy', $u) }}">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                onclick="return confirm('¿Eliminar a {{ addslashes($u->name) }}? Esta acción no se puede deshacer.')"
+                                                class="text-xs px-2 text-red-500 hover:text-red-400">
+                                            Eliminar
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         </td>

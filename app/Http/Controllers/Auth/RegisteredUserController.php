@@ -21,10 +21,31 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Honeypot: si el campo oculto viene lleno, es un bot
+        if ($request->filled('website')) {
+            return redirect()->route('register');
+        }
+
+        $blockedDomains = [
+            'mail.ru', 'inbox.ru', 'list.ru', 'bk.ru',
+            'guerrillamail.com', 'tempmail.com', 'yopmail.com',
+            'mailinator.com', 'trashmail.com', 'sharklasers.com',
+            'guerrillamailblock.com', 'grr.la', 'guerrillamail.info',
+            'spam4.me', 'getairmail.com', 'dispostable.com',
+        ];
+
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'telefono' => ['nullable', 'string', 'max:20'],
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
+            'email'    => [
+                'required', 'string', 'lowercase', 'email', 'max:255', 'unique:users',
+                function ($attr, $val, $fail) use ($blockedDomains) {
+                    $domain = strtolower(substr(strrchr($val, '@'), 1));
+                    if (in_array($domain, $blockedDomains)) {
+                        $fail('Este dominio de correo no está permitido para el registro.');
+                    }
+                },
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 

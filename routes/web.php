@@ -177,7 +177,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('usuarios', AdminUsuarioController::class)
          ->parameters(['usuarios' => 'usuario'])
-         ->only(['index', 'create', 'store', 'edit', 'update']);
+         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::patch('usuarios/{usuario}/toggle-activo', [AdminUsuarioController::class, 'toggleActivo'])->name('usuarios.toggle-activo');
     Route::patch('usuarios/{usuario}/reset-password', [AdminUsuarioController::class, 'resetPassword'])->name('usuarios.reset-password');
 });

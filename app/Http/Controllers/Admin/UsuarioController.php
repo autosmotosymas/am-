@@ -123,7 +123,6 @@ class UsuarioController extends Controller
 
     public function toggleActivo(User $usuario): RedirectResponse
     {
-        // No se puede desactivar a sí mismo
         if ($usuario->id === auth()->id()) {
             return back()->with('error', 'No puedes desactivarte a ti mismo.');
         }
@@ -133,5 +132,18 @@ class UsuarioController extends Controller
         $estado = $usuario->activo ? 'activado' : 'desactivado';
 
         return back()->with('ok', "Usuario <strong>{$usuario->name}</strong> {$estado}.");
+    }
+
+    public function destroy(User $usuario): RedirectResponse
+    {
+        if ($usuario->id === auth()->id()) {
+            return back()->with('error', 'No puedes eliminarte a ti mismo.');
+        }
+
+        $nombre = $usuario->name;
+        $usuario->delete();
+
+        return redirect()->route('admin.usuarios.index')
+            ->with('ok', "Usuario <strong>{$nombre}</strong> eliminado.");
     }
 }
