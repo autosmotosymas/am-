@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\VerificadorController;
 use App\Http\Controllers\Admin\CertificacionController;
 use App\Http\Controllers\Admin\SuscripcionController;
 use App\Http\Controllers\Admin\VendedorController;
+use App\Http\Controllers\Admin\UsuarioController as AdminUsuarioController;
 use App\Http\Controllers\Vendedor\DashboardController as VendedorDashboard;
 use App\Http\Controllers\Vendedor\AgenciaController as VendedorAgenciaController;
 use App\Http\Controllers\Vendedor\VehiculoController as VendedorVehiculoController;
@@ -173,6 +174,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('vendedores', VendedorController::class)
          ->parameters(['vendedores' => 'vendedor'])
          ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+
+    Route::resource('usuarios', AdminUsuarioController::class)
+         ->parameters(['usuarios' => 'usuario'])
+         ->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::patch('usuarios/{usuario}/toggle-activo', [AdminUsuarioController::class, 'toggleActivo'])->name('usuarios.toggle-activo');
+    Route::patch('usuarios/{usuario}/reset-password', [AdminUsuarioController::class, 'resetPassword'])->name('usuarios.reset-password');
 });
 
 /*
